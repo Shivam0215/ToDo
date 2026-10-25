@@ -1,46 +1,46 @@
 /**
- * TASKFLOW HYPER STUDIO — NEXT-GEN PRODUCTIVITY ENGINE
- * Architecture: Modular Vanilla ES6+ Interactive Studio Engine
+ * TASKFLOW — CLEAN & MINIMAL PRODUCTIVITY ENGINE
+ * Architecture: Modular Vanilla ES6+ Web Application
  * Features:
- *  - Floating Stardust Particle Physics Canvas
- *  - 3D Perspective Card Tilt & Specular Light Glare
- *  - Distraction-Free Fullscreen Zen Focus Portal
- *  - Dynamic Island Focus HUD with Live Countdown
- *  - AI Productivity Coach with Smart Sprint Launcher
- *  - 30-Day Activity Velocity Heatmap
- *  - Trophies & Achievements Showcase System (8 Badges)
- *  - Web Audio Synthesizer + Volume Slider + Canvas Equalizer
- *  - Physics Confetti Cannon Celebration
- *  - Natural Language Task Parser (!high, #dev, @tomorrow)
- *  - Quick Date Chips (Today, Tmrw, +7d)
- *  - Double-Click Inline Task Title Editing
- *  - Kanban "+ Add Card" Quick Triggers & Column Badges
- *  - Dynamic "Reset Filters" Visibility Trigger
- *  - AI Subtask Generator & Web Speech Voice Dictation
- *  - Slide-Over Inspector Drawer & Dual List / Kanban Views
- *  - 5 Iridescent Theme Suites & Data Backup (JSON / CSV)
+ *  - 100% Zero Dummy Data on First Run (Ready for real daily use)
+ *  - Distraction-Free Minimal Design (Linear / Apple / Notion aesthetic)
+ *  - Full Responsiveness (Mobile 320px+ through Ultra-wide desktop)
+ *  - Theme Engine: Light & Dark modes with persistent preference
+ *  - Task Lifecycle: To Do, In Progress, Completed
+ *  - Priority, Category, Due Dates & Overdue Badging
+ *  - Subtasks Checklist & Smart Breakdown Suggestions
+ *  - Dual View: Clean List View & Full Drag-and-Drop Kanban Board
+ *  - Inline Double-Click Title Editing
+ *  - Slide-Over Task Inspector / Edit Drawer
+ *  - Built-in Focus Studio (Pomodoro timer with live nav indicator)
+ *  - Web Audio Synthesizer: UI clicks/chimes + Generative Ambient Soundscapes
+ *  - Comprehensive Search, Multi-Filter & Sort Ordering
+ *  - Data Portability: JSON & CSV Export / Optional Demo Data Loader
+ *  - Undo Toast System & Keyboard Shortcuts
  */
 
 (() => {
     'use strict';
 
     /* ==========================================================================
-       1. WEB AUDIO API SYNTHESIZER
+       1. WEB AUDIO SYNTHESIZER & AMBIENT NOISE GENERATOR
        ========================================================================== */
     class SoundEngine {
         constructor() {
             this.audioCtx = null;
-            this.muted = localStorage.getItem('tf_hyper_muted') === 'true';
+            this.muted = localStorage.getItem('taskflow_muted') === 'true';
             this.ambientNode = null;
             this.ambientGain = null;
             this.currentAmbient = 'none';
-            this.ambientVolume = 0.7;
+            this.ambientVolume = parseFloat(localStorage.getItem('taskflow_amb_vol') || '0.7');
         }
 
         init() {
             if (!this.audioCtx) {
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (AudioCtx) this.audioCtx = new AudioCtx();
+                if (AudioCtx) {
+                    this.audioCtx = new AudioCtx();
+                }
             }
             if (this.audioCtx && this.audioCtx.state === 'suspended') {
                 this.audioCtx.resume();
@@ -49,15 +49,18 @@
 
         toggleMute() {
             this.muted = !this.muted;
-            localStorage.setItem('tf_hyper_muted', this.muted);
-            if (this.muted) this.stopAmbient();
+            localStorage.setItem('taskflow_muted', this.muted);
+            if (this.muted) {
+                this.stopAmbient();
+            }
             return !this.muted;
         }
 
         setAmbientVolume(vol) {
             this.ambientVolume = Math.max(0, Math.min(1, vol));
+            localStorage.setItem('taskflow_amb_vol', this.ambientVolume);
             if (this.ambientGain && this.audioCtx) {
-                this.ambientGain.gain.setValueAtTime(this.ambientVolume * 0.1, this.audioCtx.currentTime);
+                this.ambientGain.gain.setValueAtTime(this.ambientVolume * 0.12, this.audioCtx.currentTime);
             }
         }
 
@@ -66,21 +69,23 @@
             this.init();
             if (!this.audioCtx) return;
 
-            const osc = this.audioCtx.createOscillator();
-            const gain = this.audioCtx.createGain();
-            const now = this.audioCtx.currentTime;
+            try {
+                const osc = this.audioCtx.createOscillator();
+                const gain = this.audioCtx.createGain();
+                const now = this.audioCtx.currentTime;
 
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(450, now);
-            osc.frequency.exponentialRampToValueAtTime(850, now + 0.08);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(750, now + 0.06);
 
-            gain.gain.setValueAtTime(0.15, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
 
-            osc.connect(gain);
-            gain.connect(this.audioCtx.destination);
-            osc.start(now);
-            osc.stop(now + 0.09);
+                osc.connect(gain);
+                gain.connect(this.audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } catch (e) {}
         }
 
         playChime() {
@@ -88,23 +93,25 @@
             this.init();
             if (!this.audioCtx) return;
 
-            const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
-            notes.forEach((f, i) => {
-                const osc = this.audioCtx.createOscillator();
-                const gain = this.audioCtx.createGain();
-                const now = this.audioCtx.currentTime + (i * 0.04);
+            try {
+                const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+                notes.forEach((f, i) => {
+                    const osc = this.audioCtx.createOscillator();
+                    const gain = this.audioCtx.createGain();
+                    const now = this.audioCtx.currentTime + (i * 0.04);
 
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(f, now);
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(f, now);
 
-                gain.gain.setValueAtTime(0.12, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
 
-                osc.connect(gain);
-                gain.connect(this.audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 0.45);
-            });
+                    osc.connect(gain);
+                    gain.connect(this.audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                });
+            } catch (e) {}
         }
 
         playSwoosh() {
@@ -112,2136 +119,1770 @@
             this.init();
             if (!this.audioCtx) return;
 
-            const osc = this.audioCtx.createOscillator();
-            const gain = this.audioCtx.createGain();
-            const now = this.audioCtx.currentTime;
-
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(360, now);
-            osc.frequency.exponentialRampToValueAtTime(90, now + 0.14);
-
-            gain.gain.setValueAtTime(0.12, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
-
-            osc.connect(gain);
-            gain.connect(this.audioCtx.destination);
-            osc.start(now);
-            osc.stop(now + 0.15);
-        }
-
-        playAlarm() {
-            if (this.muted) return;
-            this.init();
-            if (!this.audioCtx) return;
-
-            [0, 0.2, 0.4].forEach(d => {
+            try {
                 const osc = this.audioCtx.createOscillator();
                 const gain = this.audioCtx.createGain();
-                const now = this.audioCtx.currentTime + d;
+                const now = this.audioCtx.currentTime;
 
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(880, now);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(250, now + 0.08);
 
                 gain.gain.setValueAtTime(0.1, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
 
                 osc.connect(gain);
                 gain.connect(this.audioCtx.destination);
                 osc.start(now);
-                osc.stop(now + 0.15);
-            });
+                osc.stop(now + 0.1);
+            } catch (e) {}
         }
 
-        startAmbient(type) {
+        setAmbient(type) {
             this.stopAmbient();
-            if (type === 'none' || this.muted) {
-                this.currentAmbient = 'none';
-                return;
-            }
+            this.currentAmbient = type;
+            if (type === 'none' || this.muted) return;
 
             this.init();
             if (!this.audioCtx) return;
-            this.currentAmbient = type;
 
             try {
-                if (type === 'rain' || type === 'whitenoise' || type === 'ocean') {
-                    const bufSize = 2 * this.audioCtx.sampleRate;
-                    const noiseBuffer = this.audioCtx.createBuffer(1, bufSize, this.audioCtx.sampleRate);
-                    const output = noiseBuffer.getChannelData(0);
-                    for (let i = 0; i < bufSize; i++) {
-                        output[i] = Math.random() * 2 - 1;
+                const bufferSize = this.audioCtx.sampleRate * 2;
+                const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+
+                if (type === 'rain') {
+                    for (let i = 0; i < bufferSize; i++) {
+                        data[i] = (Math.random() * 2 - 1) * 0.5;
                     }
-
-                    const noise = this.audioCtx.createBufferSource();
-                    noise.buffer = noiseBuffer;
-                    noise.loop = true;
-
-                    const filter = this.audioCtx.createBiquadFilter();
-                    filter.type = type === 'rain' ? 'lowpass' : (type === 'ocean' ? 'bandpass' : 'notch');
-                    filter.frequency.value = type === 'rain' ? 800 : (type === 'ocean' ? 300 : 550);
-
-                    const gain = this.audioCtx.createGain();
-                    gain.gain.setValueAtTime(this.ambientVolume * 0.08, this.audioCtx.currentTime);
-
-                    noise.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(this.audioCtx.destination);
-
-                    noise.start();
-                    this.ambientNode = noise;
-                    this.ambientGain = gain;
+                } else if (type === 'whitenoise') {
+                    for (let i = 0; i < bufferSize; i++) {
+                        data[i] = (Math.random() * 2 - 1) * 0.35;
+                    }
+                } else if (type === 'ocean') {
+                    let lastOut = 0.0;
+                    for (let i = 0; i < bufferSize; i++) {
+                        const white = Math.random() * 2 - 1;
+                        data[i] = (lastOut + (0.02 * white)) / 1.02;
+                        lastOut = data[i];
+                        data[i] *= 2.8;
+                    }
                 } else if (type === 'binaural') {
-                    const osc1 = this.audioCtx.createOscillator();
-                    const osc2 = this.audioCtx.createOscillator();
-                    const gain = this.audioCtx.createGain();
-
-                    osc1.frequency.value = 140;
-                    osc2.frequency.value = 148; // 8Hz Alpha beat
-                    gain.gain.setValueAtTime(this.ambientVolume * 0.07, this.audioCtx.currentTime);
-
-                    osc1.connect(gain);
-                    osc2.connect(gain);
-                    gain.connect(this.audioCtx.destination);
-
-                    osc1.start();
-                    osc2.start();
-
-                    this.ambientNode = {
-                        stop: () => {
-                            try { osc1.stop(); osc2.stop(); } catch (e) {}
-                        }
-                    };
-                    this.ambientGain = gain;
+                    for (let i = 0; i < bufferSize; i++) {
+                        const t = i / this.audioCtx.sampleRate;
+                        data[i] = Math.sin(2 * Math.PI * 136.1 * t) * 0.25;
+                    }
                 }
+
+                const noise = this.audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                noise.loop = true;
+
+                const filter = this.audioCtx.createBiquadFilter();
+                filter.type = type === 'rain' ? 'lowpass' : (type === 'whitenoise' ? 'bandpass' : 'lowpass');
+                filter.frequency.setValueAtTime(type === 'rain' ? 850 : (type === 'whitenoise' ? 1200 : 420), this.audioCtx.currentTime);
+
+                this.ambientGain = this.audioCtx.createGain();
+                this.ambientGain.gain.setValueAtTime(this.ambientVolume * 0.12, this.audioCtx.currentTime);
+
+                noise.connect(filter);
+                filter.connect(this.ambientGain);
+                this.ambientGain.connect(this.audioCtx.destination);
+
+                noise.start();
+                this.ambientNode = noise;
             } catch (e) {
-                console.warn('Ambient sound error:', e);
+                console.warn('Ambient sound unavailable:', e);
             }
         }
 
         stopAmbient() {
             if (this.ambientNode) {
-                try { this.ambientNode.stop(); } catch (e) {}
+                try {
+                    this.ambientNode.stop();
+                    this.ambientNode.disconnect();
+                } catch (e) {}
                 this.ambientNode = null;
             }
+            this.currentAmbient = 'none';
         }
     }
 
-    const sound = new SoundEngine();
-
     /* ==========================================================================
-       2. CANVAS SOUND EQUALIZER ANIMATION
+       2. APPLICATION STATE & PERSISTENCE
        ========================================================================== */
-    class EqualizerVisualizer {
-        constructor(canvasId) {
-            this.canvas = document.getElementById(canvasId);
-            this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
-            this.bars = [0.3, 0.7, 0.4, 0.9, 0.5, 0.8];
-            this.frame = null;
-            if (this.ctx) this.animate();
-        }
+    const STORAGE_KEY_TASKS = 'taskflow_tasks_v2';
+    const STORAGE_KEY_THEME = 'taskflow_theme';
+    const STORAGE_KEY_VIEW = 'taskflow_view';
+    const STORAGE_KEY_PROFILE = 'taskflow_profile';
 
-        animate() {
-            if (!this.ctx) return;
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-            const isPlaying = sound.ambientNode !== null;
-            const barWidth = 6;
-            const gap = 4;
-
-            this.bars.forEach((b, i) => {
-                if (isPlaying) {
-                    this.bars[i] = Math.max(0.15, Math.min(1, b + (Math.random() - 0.5) * 0.25));
-                } else {
-                    this.bars[i] = 0.15;
-                }
-
-                const height = this.bars[i] * this.canvas.height;
-                const x = i * (barWidth + gap);
-                const y = this.canvas.height - height;
-
-                this.ctx.fillStyle = isPlaying ? '#06b6d4' : 'rgba(255,255,255,0.2)';
-                this.ctx.fillRect(x, y, barWidth, height);
-            });
-
-            this.frame = requestAnimationFrame(() => this.animate());
-        }
-    }
-
-    const equalizer = new EqualizerVisualizer('equalizer-canvas');
-
-    /* ==========================================================================
-       3. FLOATING STARDUST PARTICLE ENGINE
-       ========================================================================== */
-    class StardustEngine {
-        constructor(canvasId) {
-            this.canvas = document.getElementById(canvasId);
-            this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
-            this.particles = [];
-            this.mouse = { x: null, y: null };
-            this.maxDistance = 110;
-
-            if (this.ctx) {
-                this.resize();
-                this.initParticles(60);
-                window.addEventListener('resize', () => this.resize());
-                window.addEventListener('mousemove', (e) => {
-                    this.mouse.x = e.clientX;
-                    this.mouse.y = e.clientY;
-                });
-                window.addEventListener('mouseleave', () => {
-                    this.mouse.x = null;
-                    this.mouse.y = null;
-                });
-                this.animate();
-            }
-        }
-
-        resize() {
-            if (!this.canvas) return;
-            this.canvas.width = window.innerWidth;
-            this.canvas.height = window.innerHeight;
-        }
-
-        initParticles(count) {
-            this.particles = [];
-            for (let i = 0; i < count; i++) {
-                this.particles.push({
-                    x: Math.random() * (this.canvas.width || 1200),
-                    y: Math.random() * (this.canvas.height || 800),
-                    vx: (Math.random() - 0.5) * 0.45,
-                    vy: (Math.random() - 0.5) * 0.45,
-                    radius: 1.2 + Math.random() * 2,
-                    alpha: 0.25 + Math.random() * 0.45
-                });
-            }
-        }
-
-        animate() {
-            if (!this.ctx) return;
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-            const isDark = document.documentElement.getAttribute('data-theme') !== 'liquid-pearl';
-            const nodeColor = isDark ? 'rgba(139, 92, 246,' : 'rgba(99, 102, 241,';
-            const strokeColor = isDark ? 'rgba(6, 182, 212,' : 'rgba(59, 130, 246,';
-
-            // Update & draw particles
-            for (let i = 0; i < this.particles.length; i++) {
-                const p = this.particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-
-                // Screen bounce
-                if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
-
-                // Mouse interaction
-                if (this.mouse.x !== null && this.mouse.y !== null) {
-                    const dx = p.x - this.mouse.x;
-                    const dy = p.y - this.mouse.y;
-                    const dist = Math.hypot(dx, dy);
-                    if (dist < 130) {
-                        const force = (130 - dist) / 130;
-                        p.x += (dx / dist) * force * 1.5;
-                        p.y += (dy / dist) * force * 1.5;
-
-                        // Mouse connection line
-                        this.ctx.beginPath();
-                        this.ctx.moveTo(p.x, p.y);
-                        this.ctx.lineTo(this.mouse.x, this.mouse.y);
-                        this.ctx.strokeStyle = `${strokeColor} ${(1 - dist / 130) * 0.25})`;
-                        this.ctx.lineWidth = 0.8;
-                        this.ctx.stroke();
-                    }
-                }
-
-                // Draw Particle
-                this.ctx.beginPath();
-                this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                this.ctx.fillStyle = `${nodeColor} ${p.alpha})`;
-                this.ctx.fill();
-
-                // Particle pair connections
-                for (let j = i + 1; j < this.particles.length; j++) {
-                    const p2 = this.particles[j];
-                    const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-                    if (dist < this.maxDistance) {
-                        const alpha = (1 - dist / this.maxDistance) * 0.15;
-                        this.ctx.beginPath();
-                        this.ctx.moveTo(p.x, p.y);
-                        this.ctx.lineTo(p2.x, p2.y);
-                        this.ctx.strokeStyle = `${nodeColor} ${alpha})`;
-                        this.ctx.lineWidth = 0.6;
-                        this.ctx.stroke();
-                    }
-                }
-            }
-
-            requestAnimationFrame(() => this.animate());
-        }
-    }
-
-    const stardust = new StardustEngine('stardust-canvas');
-
-    /* ==========================================================================
-       4. 3D CARD PERSPECTIVE TILT & SPECULAR GLARE
-       ========================================================================== */
-    function init3DTiltPhysics() {
-        const tiltCards = document.querySelectorAll('.tilt-card');
-        tiltCards.forEach(card => {
-            const glare = card.querySelector('.specular-glare');
-
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                const rotateX = ((y - centerY) / centerY * -6).toFixed(2);
-                const rotateY = ((x - centerX) / centerX * 6).toFixed(2);
-
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
-
-                if (glare) {
-                    glare.style.opacity = '1';
-                    glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 65%)`;
-                }
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
-                if (glare) glare.style.opacity = '0';
-            });
-        });
-    }
-
-    /* ==========================================================================
-       5. CONFETTI CELEBRATION CANNON
-       ========================================================================== */
-    class ConfettiCannon {
+    class AppState {
         constructor() {
-            this.canvas = document.getElementById('confetti-canvas');
-            this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
-            this.particles = [];
-            this.frame = null;
+            this.tasks = [];
+            this.filterStatus = 'all'; // 'all' | 'active' | 'completed'
+            this.filterCategory = 'all';
+            this.filterPriority = 'all';
+            this.sortOrder = 'newest';
+            this.searchQuery = '';
+            this.currentView = localStorage.getItem(STORAGE_KEY_VIEW) || 'list'; // 'list' | 'kanban'
+            this.theme = localStorage.getItem(STORAGE_KEY_THEME) || 'dark';
+            this.profile = {
+                streak: 0,
+                lastCompletedDate: null
+            };
+            this.stagedSubtasks = [];
+            this.deletedTaskBackup = null;
 
-            if (this.canvas) {
-                this.resize();
-                window.addEventListener('resize', () => this.resize());
+            this.load();
+        }
+
+        load() {
+            try {
+                const rawTasks = localStorage.getItem(STORAGE_KEY_TASKS);
+                if (rawTasks) {
+                    this.tasks = JSON.parse(rawTasks);
+                } else {
+                    // Deployment ready: Zero dummy data on first launch
+                    this.tasks = [];
+                }
+            } catch (e) {
+                console.error('Failed to parse stored tasks:', e);
+                this.tasks = [];
+            }
+
+            try {
+                const rawProfile = localStorage.getItem(STORAGE_KEY_PROFILE);
+                if (rawProfile) {
+                    this.profile = { ...this.profile, ...JSON.parse(rawProfile) };
+                }
+            } catch (e) {}
+        }
+
+        save() {
+            try {
+                localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(this.tasks));
+                localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(this.profile));
+                localStorage.setItem(STORAGE_KEY_VIEW, this.currentView);
+                localStorage.setItem(STORAGE_KEY_THEME, this.theme);
+            } catch (e) {
+                console.error('Storage quota exceeded or error saving:', e);
             }
         }
 
-        resize() {
-            if (!this.canvas) return;
-            this.canvas.width = window.innerWidth;
-            this.canvas.height = window.innerHeight;
+        checkStreak() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (this.profile.lastCompletedDate === todayStr) return;
+
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+            if (this.profile.lastCompletedDate === yesterdayStr) {
+                this.profile.streak += 1;
+            } else if (!this.profile.lastCompletedDate) {
+                this.profile.streak = 1;
+            } else {
+                this.profile.streak = 1;
+            }
+            this.profile.lastCompletedDate = todayStr;
+            this.save();
         }
 
-        burst(x = window.innerWidth / 2, y = window.innerHeight / 3) {
-            if (!this.ctx) return;
-            const colors = ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#f43f5e', '#ec4899', '#ffe600'];
-            for (let i = 0; i < 75; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const spd = 4 + Math.random() * 8;
-                this.particles.push({
-                    x, y,
-                    vx: Math.cos(angle) * spd,
-                    vy: Math.sin(angle) * spd - 3,
-                    size: 6 + Math.random() * 6,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    rot: Math.random() * 360,
-                    rotSpeed: (Math.random() - 0.5) * 12,
-                    alpha: 1,
-                    decay: 0.015 + Math.random() * 0.015
+        addTask(taskData) {
+            const newTask = {
+                id: 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                title: taskData.title.trim(),
+                status: taskData.status || 'todo', // 'todo' | 'inprogress' | 'completed'
+                priority: taskData.priority || 'medium', // 'low' | 'medium' | 'high'
+                category: taskData.category || '👤 Personal',
+                dueDate: taskData.dueDate || '',
+                notes: taskData.notes || '',
+                subtasks: taskData.subtasks ? [...taskData.subtasks] : [],
+                starred: !!taskData.starred,
+                createdAt: new Date().toISOString(),
+                completedAt: taskData.status === 'completed' ? new Date().toISOString() : null
+            };
+
+            this.tasks.unshift(newTask);
+            this.save();
+            return newTask;
+        }
+
+        updateTask(id, patch) {
+            const task = this.tasks.find(t => t.id === id);
+            if (!task) return null;
+
+            const prevStatus = task.status;
+            Object.assign(task, patch);
+
+            if (patch.status === 'completed' && prevStatus !== 'completed') {
+                task.completedAt = new Date().toISOString();
+                this.checkStreak();
+            } else if (patch.status && patch.status !== 'completed') {
+                task.completedAt = null;
+            }
+
+            this.save();
+            return task;
+        }
+
+        deleteTask(id) {
+            const index = this.tasks.findIndex(t => t.id === id);
+            if (index === -1) return null;
+
+            const removed = this.tasks.splice(index, 1)[0];
+            this.deletedTaskBackup = { task: removed, index };
+            this.save();
+            return removed;
+        }
+
+        restoreLastDeleted() {
+            if (!this.deletedTaskBackup) return null;
+            const { task, index } = this.deletedTaskBackup;
+            const insertIdx = Math.min(index, this.tasks.length);
+            this.tasks.splice(insertIdx, 0, task);
+            this.deletedTaskBackup = null;
+            this.save();
+            return task;
+        }
+
+        clearCompleted() {
+            const removed = this.tasks.filter(t => t.status === 'completed');
+            this.tasks = this.tasks.filter(t => t.status !== 'completed');
+            this.save();
+            return removed.length;
+        }
+
+        getFilteredTasks() {
+            return this.tasks.filter(task => {
+                // Status Filter
+                if (this.filterStatus === 'active') {
+                    if (task.status === 'completed') return false;
+                } else if (this.filterStatus === 'completed') {
+                    if (task.status !== 'completed') return false;
+                }
+
+                // Category Filter
+                if (this.filterCategory !== 'all' && task.category !== this.filterCategory) {
+                    return false;
+                }
+
+                // Priority Filter
+                if (this.filterPriority !== 'all' && task.priority !== this.filterPriority) {
+                    return false;
+                }
+
+                // Search Query
+                if (this.searchQuery) {
+                    const q = this.searchQuery.toLowerCase();
+                    const titleMatch = task.title.toLowerCase().includes(q);
+                    const catMatch = task.category.toLowerCase().includes(q);
+                    const notesMatch = (task.notes || '').toLowerCase().includes(q);
+                    const subtaskMatch = task.subtasks && task.subtasks.some(st => st.text.toLowerCase().includes(q));
+                    if (!titleMatch && !catMatch && !notesMatch && !subtaskMatch) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }).sort((a, b) => {
+                // Pinned / Starred items float to top
+                if (a.starred && !b.starred) return -1;
+                if (!a.starred && b.starred) return 1;
+
+                if (this.sortOrder === 'priority') {
+                    const weight = { high: 3, medium: 2, low: 1 };
+                    return (weight[b.priority] || 0) - (weight[a.priority] || 0);
+                }
+                if (this.sortOrder === 'due') {
+                    if (!a.dueDate) return 1;
+                    if (!b.dueDate) return -1;
+                    return new Date(a.dueDate) - new Date(b.dueDate);
+                }
+                if (this.sortOrder === 'az') {
+                    return a.title.localeCompare(b.title);
+                }
+                // Default 'newest'
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+        }
+    }
+
+    /* ==========================================================================
+       3. FOCUS TIMER (POMODORO) ENGINE
+       ========================================================================== */
+    class FocusTimer {
+        constructor(soundEngine, onTick, onComplete) {
+            this.soundEngine = soundEngine;
+            this.onTick = onTick;
+            this.onComplete = onComplete;
+            this.duration = 25 * 60; // in seconds
+            this.remaining = 25 * 60;
+            this.isRunning = false;
+            this.timerInterval = null;
+            this.targetTask = null;
+        }
+
+        setDuration(minutes) {
+            this.pause();
+            this.duration = minutes * 60;
+            this.remaining = this.duration;
+            this.onTick(this.remaining, this.duration);
+        }
+
+        setTarget(task) {
+            this.targetTask = task;
+        }
+
+        start() {
+            if (this.isRunning) return;
+            this.soundEngine.init();
+            this.soundEngine.playPop();
+            this.isRunning = true;
+
+            this.timerInterval = setInterval(() => {
+                if (this.remaining > 0) {
+                    this.remaining--;
+                    this.onTick(this.remaining, this.duration);
+                } else {
+                    this.finish();
+                }
+            }, 1000);
+        }
+
+        pause() {
+            if (!this.isRunning) return;
+            this.soundEngine.playPop();
+            this.isRunning = false;
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
+
+        reset() {
+            this.pause();
+            this.remaining = this.duration;
+            this.onTick(this.remaining, this.duration);
+        }
+
+        finish() {
+            this.pause();
+            this.soundEngine.playChime();
+            if (this.onComplete) {
+                this.onComplete(this.targetTask);
+            }
+        }
+    }
+
+    /* ==========================================================================
+       4. MAIN CONTROLLER & DOM INTEGRATION
+       ========================================================================== */
+    class TaskFlowApp {
+        constructor() {
+            this.state = new AppState();
+            this.sound = new SoundEngine();
+
+            // Cache DOM Elements
+            this.cacheDom();
+
+            // Initialize Focus Timer
+            this.timer = new FocusTimer(
+                this.sound,
+                (rem, total) => this.handleTimerTick(rem, total),
+                (task) => this.handleTimerComplete(task)
+            );
+
+            // Bind Events & Initial Render
+            this.initTheme();
+            this.initDate();
+            this.bindEvents();
+            this.renderAll();
+        }
+
+        cacheDom() {
+            // Header
+            this.elCurrentDate = document.getElementById('current-date');
+            this.elNavFocusPill = document.getElementById('nav-focus-pill');
+            this.elNavFocusTime = document.getElementById('nav-focus-time');
+            this.elSoundBtn = document.getElementById('sound-btn');
+            this.elSoundIcon = document.getElementById('sound-icon');
+            this.elThemeBtn = document.getElementById('theme-btn');
+            this.elThemeIcon = document.getElementById('theme-icon');
+            this.elBackupBtn = document.getElementById('backup-btn');
+            this.elShortcutsBtn = document.getElementById('shortcuts-btn');
+
+            // Overview Strip
+            this.elStatRatio = document.getElementById('stat-ratio');
+            this.elProgressBar = document.getElementById('progress-bar-fill');
+            this.elStatTotal = document.getElementById('stat-total');
+            this.elStatActive = document.getElementById('stat-active');
+            this.elStatDone = document.getElementById('stat-done');
+            this.elStatStreak = document.getElementById('stat-streak');
+
+            // Composer
+            this.elTaskForm = document.getElementById('task-form');
+            this.elTaskInput = document.getElementById('task-input');
+            this.elAddTaskBtn = document.getElementById('add-task-btn');
+            this.elPriorityChips = document.querySelectorAll('.chip-prio');
+            this.elProjectSelect = document.getElementById('project-select');
+            this.elDueDateInput = document.getElementById('due-date-input');
+            this.elDateChips = document.querySelectorAll('.chip-date');
+            this.elAiBreakdownBtn = document.getElementById('ai-breakdown-btn');
+            this.elStagedShelf = document.getElementById('staged-shelf');
+            this.elShelfList = document.getElementById('shelf-list');
+            this.elClearShelfBtn = document.getElementById('clear-shelf-btn');
+
+            // Focus Timer
+            this.elTimerDisplay = document.getElementById('timer-display');
+            this.elTimerTarget = document.getElementById('timer-target');
+            this.elTimerStartBtn = document.getElementById('timer-start-btn');
+            this.elTimerResetBtn = document.getElementById('timer-reset-btn');
+            this.elPresetBtns = document.querySelectorAll('.preset-btn');
+            this.elAmbChips = document.querySelectorAll('.amb-chip');
+            this.elVolSlider = document.getElementById('vol-slider');
+            this.elVolIcon = document.getElementById('vol-icon');
+
+            // Toolbar & Views
+            this.elSearchInput = document.getElementById('search-input');
+            this.elSearchClearBtn = document.getElementById('search-clear-btn');
+            this.elTabBtns = document.querySelectorAll('.tab-btn');
+            this.elTabCntAll = document.getElementById('tab-cnt-all');
+            this.elTabCntActive = document.getElementById('tab-cnt-active');
+            this.elTabCntDone = document.getElementById('tab-cnt-done');
+            this.elFilterCategory = document.getElementById('filter-category');
+            this.elFilterPriority = document.getElementById('filter-priority');
+            this.elSortOrder = document.getElementById('sort-order');
+            this.elViewListBtn = document.getElementById('view-list-btn');
+            this.elViewKanbanBtn = document.getElementById('view-kanban-btn');
+            this.elClearDoneBtn = document.getElementById('clear-done-btn');
+            this.elFiltersBanner = document.getElementById('filters-active-banner');
+            this.elResetFiltersBtn = document.getElementById('reset-filters-btn');
+
+            // Containers
+            this.elListView = document.getElementById('list-view');
+            this.elTaskList = document.getElementById('task-list');
+            this.elKanbanView = document.getElementById('kanban-view');
+            this.elKbDropTodo = document.getElementById('kb-drop-todo');
+            this.elKbDropInprog = document.getElementById('kb-drop-inprogress');
+            this.elKbDropDone = document.getElementById('kb-drop-completed');
+            this.elKbCntTodo = document.getElementById('kb-cnt-todo');
+            this.elKbCntInprog = document.getElementById('kb-cnt-inprogress');
+            this.elKbCntDone = document.getElementById('kb-cnt-completed');
+            this.elKbAddBtns = document.querySelectorAll('.kb-add-btn');
+
+            // Slide-over Drawer
+            this.elDrawerBackdrop = document.getElementById('drawer-backdrop');
+            this.elTaskDrawer = document.getElementById('task-drawer');
+            this.elDrawerTaskId = document.getElementById('drawer-task-id');
+            this.elDrawerTitle = document.getElementById('drawer-task-title');
+            this.elDrawerStatus = document.getElementById('drawer-task-status');
+            this.elDrawerPrio = document.getElementById('drawer-task-prio');
+            this.elDrawerCat = document.getElementById('drawer-task-cat');
+            this.elDrawerDue = document.getElementById('drawer-task-due');
+            this.elDrawerChecklistCnt = document.getElementById('drawer-checklist-cnt');
+            this.elDrawerNewSubtask = document.getElementById('drawer-new-subtask');
+            this.elDrawerAddSubtaskBtn = document.getElementById('drawer-add-subtask-btn');
+            this.elDrawerSubtasksList = document.getElementById('drawer-subtasks-list');
+            this.elDrawerNotes = document.getElementById('drawer-task-notes');
+            this.elDrawerStarBtn = document.getElementById('drawer-star-btn');
+            this.elDrawerCloseBtn = document.getElementById('drawer-close-btn');
+            this.elDrawerDeleteBtn = document.getElementById('drawer-delete-btn');
+            this.elDrawerSaveBtn = document.getElementById('drawer-save-btn');
+
+            // Modals
+            this.elShortcutsModal = document.getElementById('shortcuts-modal');
+            this.elShortcutsClose = document.getElementById('shortcuts-close');
+            this.elBackupModal = document.getElementById('backup-modal');
+            this.elBackupClose = document.getElementById('backup-close');
+            this.elBtnExportJson = document.getElementById('btn-export-json');
+            this.elBtnExportCsv = document.getElementById('btn-export-csv');
+            this.elBtnLoadDemo = document.getElementById('btn-load-demo');
+
+            // Toast Container
+            this.elToastContainer = document.getElementById('toast-container');
+        }
+
+        /* ----------------------------------------------------------------------
+           THEME & DATE SETUP
+           ---------------------------------------------------------------------- */
+        initTheme() {
+            const currentTheme = this.state.theme || 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            if (this.elThemeIcon) {
+                this.elThemeIcon.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+            }
+            if (this.elSoundIcon) {
+                this.elSoundIcon.textContent = this.sound.muted ? '🔇' : '🔊';
+            }
+            if (this.elVolSlider) {
+                this.elVolSlider.value = Math.round(this.sound.ambientVolume * 100);
+            }
+        }
+
+        toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            this.state.theme = next;
+            this.state.save();
+            if (this.elThemeIcon) {
+                this.elThemeIcon.textContent = next === 'dark' ? '🌙' : '☀️';
+            }
+            this.sound.playPop();
+            this.showToast(`Switched to ${next === 'dark' ? 'Dark' : 'Light'} theme`);
+        }
+
+        initDate() {
+            if (!this.elCurrentDate) return;
+            const now = new Date();
+            const opts = { weekday: 'short', month: 'short', day: 'numeric' };
+            this.elCurrentDate.textContent = now.toLocaleDateString('en-US', opts);
+        }
+
+        /* ----------------------------------------------------------------------
+           EVENT BINDINGS
+           ---------------------------------------------------------------------- */
+        bindEvents() {
+            // Theme & Sound Header Buttons
+            if (this.elThemeBtn) {
+                this.elThemeBtn.addEventListener('click', () => this.toggleTheme());
+            }
+            if (this.elSoundBtn) {
+                this.elSoundBtn.addEventListener('click', () => {
+                    const unmuted = this.sound.toggleMute();
+                    this.elSoundIcon.textContent = unmuted ? '🔊' : '🔇';
+                    this.showToast(unmuted ? 'Sound enabled' : 'Sound muted');
                 });
             }
-            if (!this.frame) this.render();
-        }
 
-        render() {
-            if (!this.ctx) return;
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            // Shortcuts & Backup Modals
+            if (this.elShortcutsBtn) {
+                this.elShortcutsBtn.addEventListener('click', () => this.openModal(this.elShortcutsModal));
+            }
+            if (this.elShortcutsClose) {
+                this.elShortcutsClose.addEventListener('click', () => this.closeModal(this.elShortcutsModal));
+            }
+            if (this.elBackupBtn) {
+                this.elBackupBtn.addEventListener('click', () => this.openModal(this.elBackupModal));
+            }
+            if (this.elBackupClose) {
+                this.elBackupClose.addEventListener('click', () => this.closeModal(this.elBackupModal));
+            }
 
-            this.particles.forEach((p, idx) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.22;
-                p.rot += p.rotSpeed;
-                p.alpha -= p.decay;
+            // Backup Actions
+            if (this.elBtnExportJson) {
+                this.elBtnExportJson.addEventListener('click', () => this.exportJSON());
+            }
+            if (this.elBtnExportCsv) {
+                this.elBtnExportCsv.addEventListener('click', () => this.exportCSV());
+            }
+            if (this.elBtnLoadDemo) {
+                this.elBtnLoadDemo.addEventListener('click', () => this.loadShowcaseData());
+            }
 
-                if (p.alpha <= 0) {
-                    this.particles.splice(idx, 1);
+            // Priority Chips Selection in Composer
+            this.elPriorityChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    this.elPriorityChips.forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    this.sound.playPop();
+                });
+            });
+
+            // Quick Date Chips in Composer
+            this.elDateChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    const days = parseInt(chip.dataset.days, 10);
+                    const d = new Date();
+                    d.setDate(d.getDate() + days);
+                    const formatted = d.toISOString().split('T')[0];
+                    if (this.elDueDateInput) {
+                        this.elDueDateInput.value = formatted;
+                    }
+                    this.sound.playPop();
+                });
+            });
+
+            // Task Composer Submit
+            if (this.elTaskForm) {
+                this.elTaskForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleAddTask();
+                });
+            }
+
+            // AI Subtask Breakdown Trigger
+            if (this.elAiBreakdownBtn) {
+                this.elAiBreakdownBtn.addEventListener('click', () => this.generateSubtasks());
+            }
+            if (this.elClearShelfBtn) {
+                this.elClearShelfBtn.addEventListener('click', () => {
+                    this.state.stagedSubtasks = [];
+                    this.renderStagedShelf();
+                });
+            }
+
+            // Focus Timer Presets
+            this.elPresetBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    this.elPresetBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const mins = parseInt(btn.dataset.mins, 10);
+                    this.timer.setDuration(mins);
+                    this.sound.playPop();
+                });
+            });
+
+            // Focus Timer Controls
+            if (this.elTimerStartBtn) {
+                this.elTimerStartBtn.addEventListener('click', () => {
+                    if (this.timer.isRunning) {
+                        this.timer.pause();
+                        this.elTimerStartBtn.textContent = 'Resume';
+                    } else {
+                        this.timer.start();
+                        this.elTimerStartBtn.textContent = 'Pause';
+                        if (this.elNavFocusPill) this.elNavFocusPill.classList.remove('hidden');
+                    }
+                });
+            }
+            if (this.elTimerResetBtn) {
+                this.elTimerResetBtn.addEventListener('click', () => {
+                    this.timer.reset();
+                    if (this.elTimerStartBtn) this.elTimerStartBtn.textContent = 'Start';
+                    if (this.elNavFocusPill) this.elNavFocusPill.classList.add('hidden');
+                });
+            }
+            if (this.elNavFocusPill) {
+                this.elNavFocusPill.addEventListener('click', () => {
+                    const focusCard = document.querySelector('.focus-card');
+                    if (focusCard) {
+                        focusCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            }
+
+            // Ambient Soundscapes
+            this.elAmbChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    this.elAmbChips.forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    const soundType = chip.dataset.sound;
+                    this.sound.setAmbient(soundType);
+                });
+            });
+            if (this.elVolSlider) {
+                this.elVolSlider.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value) / 100;
+                    this.sound.setAmbientVolume(val);
+                    if (this.elVolIcon) {
+                        this.elVolIcon.textContent = val === 0 ? '🔇' : (val < 0.5 ? '🔉' : '🔊');
+                    }
+                });
+            }
+
+            // Search Bar & Clear Search
+            if (this.elSearchInput) {
+                this.elSearchInput.addEventListener('input', (e) => {
+                    this.state.searchQuery = e.target.value.trim();
+                    if (this.elSearchClearBtn) {
+                        this.elSearchClearBtn.classList.toggle('hidden', !this.state.searchQuery);
+                    }
+                    this.renderTasks();
+                    this.checkActiveFilters();
+                });
+            }
+            if (this.elSearchClearBtn) {
+                this.elSearchClearBtn.addEventListener('click', () => {
+                    if (this.elSearchInput) this.elSearchInput.value = '';
+                    this.state.searchQuery = '';
+                    this.elSearchClearBtn.classList.add('hidden');
+                    this.renderTasks();
+                    this.checkActiveFilters();
+                });
+            }
+
+            // Filter Tabs (All / Active / Completed)
+            this.elTabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    this.elTabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.state.filterStatus = btn.dataset.filter;
+                    this.sound.playPop();
+                    this.renderTasks();
+                    this.checkActiveFilters();
+                });
+            });
+
+            // Secondary Filters: Category, Priority, Sort Order
+            if (this.elFilterCategory) {
+                this.elFilterCategory.addEventListener('change', (e) => {
+                    this.state.filterCategory = e.target.value;
+                    this.renderTasks();
+                    this.checkActiveFilters();
+                });
+            }
+            if (this.elFilterPriority) {
+                this.elFilterPriority.addEventListener('change', (e) => {
+                    this.state.filterPriority = e.target.value;
+                    this.renderTasks();
+                    this.checkActiveFilters();
+                });
+            }
+            if (this.elSortOrder) {
+                this.elSortOrder.addEventListener('change', (e) => {
+                    this.state.sortOrder = e.target.value;
+                    this.renderTasks();
+                });
+            }
+
+            // Reset Active Filters
+            if (this.elResetFiltersBtn) {
+                this.elResetFiltersBtn.addEventListener('click', () => {
+                    this.resetAllFilters();
+                });
+            }
+
+            // View Switcher (List vs Kanban)
+            if (this.elViewListBtn) {
+                this.elViewListBtn.addEventListener('click', () => this.switchView('list'));
+            }
+            if (this.elViewKanbanBtn) {
+                this.elViewKanbanBtn.addEventListener('click', () => this.switchView('kanban'));
+            }
+
+            // Clear Completed Tasks
+            if (this.elClearDoneBtn) {
+                this.elClearDoneBtn.addEventListener('click', () => {
+                    const count = this.state.clearCompleted();
+                    if (count > 0) {
+                        this.sound.playPop();
+                        this.renderAll();
+                        this.showToast(`Cleared ${count} completed task${count > 1 ? 's' : ''}`);
+                    } else {
+                        this.showToast('No completed tasks to clear');
+                    }
+                });
+            }
+
+            // Kanban Column Quick Add Buttons
+            this.elKbAddBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const colStatus = btn.dataset.status;
+                    const title = prompt(`Add a new card to "${colStatus.toUpperCase()}":`);
+                    if (title && title.trim()) {
+                        this.state.addTask({
+                            title: title.trim(),
+                            status: colStatus,
+                            priority: 'medium',
+                            category: '💼 Work'
+                        });
+                        this.sound.playChime();
+                        this.renderAll();
+                        this.showToast('Card added');
+                    }
+                });
+            });
+
+            // Drawer Controls
+            if (this.elDrawerCloseBtn) {
+                this.elDrawerCloseBtn.addEventListener('click', () => this.closeDrawer());
+            }
+            if (this.elDrawerBackdrop) {
+                this.elDrawerBackdrop.addEventListener('click', (e) => {
+                    if (e.target === this.elDrawerBackdrop) this.closeDrawer();
+                });
+            }
+            if (this.elDrawerSaveBtn) {
+                this.elDrawerSaveBtn.addEventListener('click', () => this.saveDrawerTask());
+            }
+            if (this.elDrawerDeleteBtn) {
+                this.elDrawerDeleteBtn.addEventListener('click', () => {
+                    const id = this.elDrawerTaskId.value;
+                    if (id) {
+                        this.deleteTaskWithUndo(id);
+                        this.closeDrawer();
+                    }
+                });
+            }
+            if (this.elDrawerStarBtn) {
+                this.elDrawerStarBtn.addEventListener('click', () => {
+                    const id = this.elDrawerTaskId.value;
+                    const task = this.state.tasks.find(t => t.id === id);
+                    if (task) {
+                        task.starred = !task.starred;
+                        this.elDrawerStarBtn.classList.toggle('active', task.starred);
+                        this.state.save();
+                        this.renderTasks();
+                        this.sound.playPop();
+                    }
+                });
+            }
+            if (this.elDrawerAddSubtaskBtn) {
+                this.elDrawerAddSubtaskBtn.addEventListener('click', () => this.addDrawerSubtask());
+            }
+            if (this.elDrawerNewSubtask) {
+                this.elDrawerNewSubtask.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.addDrawerSubtask();
+                    }
+                });
+            }
+
+            // Keyboard Shortcuts
+            window.addEventListener('keydown', (e) => {
+                const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+                const isInputActive = activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select';
+
+                if (e.key === 'Escape') {
+                    this.closeDrawer();
+                    this.closeModal(this.elShortcutsModal);
+                    this.closeModal(this.elBackupModal);
                     return;
                 }
 
-                this.ctx.save();
-                this.ctx.globalAlpha = p.alpha;
-                this.ctx.translate(p.x, p.y);
-                this.ctx.rotate((p.rot * Math.PI) / 180);
-                this.ctx.fillStyle = p.color;
-                this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
-                this.ctx.restore();
+                if (isInputActive) return;
+
+                if (e.key === 'n' || e.key === 'N') {
+                    e.preventDefault();
+                    if (this.elTaskInput) {
+                        this.elTaskInput.focus();
+                        this.elTaskInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    if (this.elSearchInput) {
+                        this.elSearchInput.focus();
+                    }
+                } else if (e.key === 'p' || e.key === 'P') {
+                    e.preventDefault();
+                    if (this.elTimerStartBtn) this.elTimerStartBtn.click();
+                } else if (e.key === 'm' || e.key === 'M') {
+                    e.preventDefault();
+                    if (this.elSoundBtn) this.elSoundBtn.click();
+                } else if (e.key === 't' || e.key === 'T') {
+                    e.preventDefault();
+                    this.toggleTheme();
+                } else if (e.key === 'v' || e.key === 'V') {
+                    e.preventDefault();
+                    this.switchView(this.state.currentView === 'list' ? 'kanban' : 'list');
+                } else if (e.key === '?') {
+                    e.preventDefault();
+                    this.openModal(this.elShortcutsModal);
+                }
             });
 
-            if (this.particles.length > 0) {
-                this.frame = requestAnimationFrame(() => this.render());
-            } else {
-                this.frame = null;
+            // Drag and drop setup for Kanban columns
+            this.setupKanbanDragAndDrop();
+        }
+
+        /* ----------------------------------------------------------------------
+           FOCUS TIMER HANDLERS
+           ---------------------------------------------------------------------- */
+        handleTimerTick(remaining, total) {
+            const mins = Math.floor(remaining / 60);
+            const secs = remaining % 60;
+            const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+            if (this.elTimerDisplay) {
+                this.elTimerDisplay.textContent = formatted;
+            }
+            if (this.elNavFocusTime) {
+                this.elNavFocusTime.textContent = formatted;
             }
         }
-    }
 
-    const confetti = new ConfettiCannon();
+        handleTimerComplete(targetTask) {
+            if (this.elTimerStartBtn) this.elTimerStartBtn.textContent = 'Start';
+            if (this.elNavFocusPill) this.elNavFocusPill.classList.add('hidden');
 
-    /* ==========================================================================
-       6. TOAST NOTIFICATIONS WITH UNDO
-       ========================================================================== */
-    class ToastManager {
-        constructor() {
-            this.container = document.getElementById('toast-container');
+            if (targetTask) {
+                this.showToast(`Focus session completed for "${targetTask.title}"! 🎉`);
+            } else {
+                this.showToast('Focus session complete! Take a mindful breather. 🍵');
+            }
         }
 
-        show({ message, icon = 'ℹ️', duration = 4000, actionText = null, onAction = null }) {
-            if (!this.container) return;
+        /* ----------------------------------------------------------------------
+           MODALS & TOASTS
+           ---------------------------------------------------------------------- */
+        openModal(modal) {
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            this.sound.playPop();
+        }
+
+        closeModal(modal) {
+            if (!modal) return;
+            modal.classList.add('hidden');
+        }
+
+        showToast(message, actionText = null, onAction = null) {
+            if (!this.elToastContainer) return;
 
             const toast = document.createElement('div');
             toast.className = 'toast';
 
-            const content = document.createElement('div');
-            content.className = 'toast-content';
-            content.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
-            toast.appendChild(content);
+            const msgSpan = document.createElement('span');
+            msgSpan.textContent = message;
+            toast.appendChild(msgSpan);
 
             if (actionText && onAction) {
-                const btn = document.createElement('button');
-                btn.className = 'toast-undo-btn';
-                btn.textContent = actionText;
-                btn.onclick = () => {
+                const actionBtn = document.createElement('button');
+                actionBtn.className = 'toast-undo';
+                actionBtn.textContent = actionText;
+                actionBtn.addEventListener('click', () => {
                     onAction();
-                    this.remove(toast);
-                };
-                toast.appendChild(btn);
+                    toast.remove();
+                });
+                toast.appendChild(actionBtn);
             }
 
-            const bar = document.createElement('div');
-            bar.className = 'toast-progress';
-            bar.style.animationDuration = `${duration}ms`;
-            toast.appendChild(bar);
+            this.elToastContainer.appendChild(toast);
 
-            this.container.appendChild(toast);
-            const timer = setTimeout(() => this.remove(toast), duration);
-            toast._timer = timer;
-        }
-
-        remove(toast) {
-            if (toast._timer) clearTimeout(toast._timer);
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateY(15px)';
             setTimeout(() => {
-                if (toast.parentElement) toast.parentElement.removeChild(toast);
-            }, 200);
+                toast.style.transition = 'opacity 0.25s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 250);
+            }, 3500);
         }
-    }
 
-    const toast = new ToastManager();
+        /* ----------------------------------------------------------------------
+           TASK CREATION & NATURAL LANGUAGE PARSING
+           ---------------------------------------------------------------------- */
+        handleAddTask() {
+            if (!this.elTaskInput) return;
+            let rawTitle = this.elTaskInput.value.trim();
+            if (!rawTitle) return;
 
-    /* ==========================================================================
-       7. DEMO TASKS & SYSTEM STATE
-       ========================================================================== */
-    const DEMO_TASKS = [
-        {
-            id: 1702000001,
-            text: "Design futuristic holographic Bento Grid & Spotlight UI",
-            completed: true,
-            status: "completed",
-            priority: "high",
-            category: "🎨 Creative",
-            dueDate: new Date().toISOString().split('T')[0],
-            starred: true,
-            notes: "Next-gen iridescent neon aesthetic with interactive cursor spotlight and animated sound equalizer.",
-            subtasks: [
-                { id: 1, text: "Build interactive cursor spotlight glow", completed: true },
-                { id: 2, text: "Design live digital clock & theme popover", completed: true }
-            ],
-            createdAt: Date.now() - 3600000 * 6,
-            completedAt: Date.now() - 3600000 * 5
-        },
-        {
-            id: 1702000002,
-            text: "Implement procedural audio synthesizer & focus soundscapes",
-            completed: false,
-            status: "inprogress",
-            priority: "high",
-            category: "💻 Development",
-            dueDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-            starred: true,
-            notes: "Zero external audio files required! Synthesizes rain, flow white noise, ocean, and 432Hz binaural beats.",
-            subtasks: [
-                { id: 10, text: "Binaural alpha wave focus oscillator", completed: true },
-                { id: 11, text: "Live canvas equalizer bars animation", completed: true }
-            ],
-            createdAt: Date.now() - 3600000 * 3
-        },
-        {
-            id: 1702000003,
-            text: "Master daily mobility & intense workout routine",
-            completed: false,
-            status: "todo",
-            priority: "medium",
-            category: "💪 Fitness",
-            dueDate: "",
-            starred: false,
-            notes: "Hydrate and hit progressive overload targets.",
-            subtasks: [
-                { id: 20, text: "5 min warmup & joint mobility", completed: false },
-                { id: 21, text: "Main lifting compound sets", completed: false }
-            ],
-            createdAt: Date.now() - 3600000 * 1
-        }
-    ];
-
-    const State = {
-        tasks: [],
-        currentFilter: 'all', // 'all' | 'active' | 'completed'
-        filterCategory: 'all',
-        filterPriority: 'all',
-        sortOrder: 'newest',
-        searchTerm: '',
-        viewMode: 'list', // 'list' | 'kanban'
-        activeComposerPriority: 'medium',
-        stagedSubtasks: [],
-        lastDeleted: null,
-
-        // Profile & Gamification
-        userProfile: {
-            name: 'Shivam Chauhan',
-            xp: 220,
-            streak: 3,
-            lastStreakDate: new Date().toISOString().split('T')[0]
-        },
-
-        // Focus Studio
-        pomodoro: {
-            mode: 'work',
-            duration: 25 * 60,
-            timeLeft: 25 * 60,
-            isRunning: false,
-            interval: null,
-            targetTaskId: null
-        }
-    };
-
-    /* ==========================================================================
-       8. DOM ELEMENTS CACHE
-       ========================================================================== */
-    const DOM = {
-        // Spotlight & Live Clock
-        cursorGlow: document.getElementById('cursor-glow'),
-        liveClockDigits: document.getElementById('live-clock-digits'),
-        liveClockDate: document.getElementById('live-clock-date'),
-        soundBtn: document.getElementById('sound-btn'),
-        themeBtn: document.getElementById('theme-btn'),
-        themeMenu: document.getElementById('theme-menu'),
-        themeOptions: document.querySelectorAll('.theme-option'),
-        shortcutsBtn: document.getElementById('shortcuts-btn'),
-        dataBackupBtn: document.getElementById('data-backup-btn'),
-
-        // Gamification & Trophies
-        openAchievementsBtn: document.getElementById('open-achievements-btn'),
-        achievementsModal: document.getElementById('achievements-modal'),
-        achievementsClose: document.getElementById('achievements-close'),
-        trophiesGrid: document.getElementById('trophies-grid'),
-        streakCount: document.getElementById('streak-count'),
-        levelTitle: document.getElementById('level-title'),
-        levelXp: document.getElementById('level-xp'),
-        xpMeterBar: document.getElementById('xp-meter-bar'),
-
-        // Dynamic Island Focus HUD & Zen Mode
-        dynamicIslandHud: document.getElementById('dynamic-island-hud'),
-        hudTime: document.getElementById('hud-time'),
-        hudTaskName: document.getElementById('hud-task-name'),
-        openZenBtn: document.getElementById('open-zen-btn'),
-        zenOverlay: document.getElementById('zen-overlay'),
-        zenExitBtn: document.getElementById('zen-exit-btn'),
-        zenTimerDigits: document.getElementById('zen-timer-digits'),
-        zenTaskTitle: document.getElementById('zen-task-title'),
-        zenToggleBtn: document.getElementById('zen-toggle-btn'),
-        zenResetBtn: document.getElementById('zen-reset-btn'),
-        zenQuote: document.getElementById('zen-quote'),
-
-        // AI Productivity Coach Banner
-        coachBanner: document.getElementById('coach-banner'),
-        coachText: document.getElementById('coach-text'),
-        coachSprintBtn: document.getElementById('coach-sprint-btn'),
-        coachInspireBtn: document.getElementById('coach-inspire-btn'),
-
-        // Composer
-        taskInput: document.getElementById('task-input'),
-        voiceBtn: document.getElementById('voice-btn'),
-        voicePulse: document.getElementById('voice-pulse'),
-        addTaskBtn: document.getElementById('add-task-btn'),
-        prioChips: document.querySelectorAll('.priority-segmented .prio-chip'),
-        projectSelect: document.getElementById('project-select'),
-        dueDateInput: document.getElementById('due-date-input'),
-        dateChips: document.querySelectorAll('.date-chip'),
-        aiBreakdownBtn: document.getElementById('ai-breakdown-btn'),
-        subtasksShelf: document.getElementById('subtasks-shelf'),
-        shelfItems: document.getElementById('shelf-items'),
-        clearShelfBtn: document.getElementById('clear-shelf-btn'),
-
-        // Focus Studio & Ambient Volume
-        timerDigits: document.getElementById('timer-digits'),
-        timerProgressRing: document.getElementById('timer-progress-ring'),
-        timerTargetTag: document.getElementById('timer-target-tag'),
-        timerToggleBtn: document.getElementById('timer-toggle-btn'),
-        timerResetBtn: document.getElementById('timer-reset-btn'),
-        focusPills: document.querySelectorAll('.f-pill'),
-        ambientChips: document.querySelectorAll('.amb-chip'),
-        ambientVolSlider: document.getElementById('ambient-vol-slider'),
-        ambientVolVal: document.getElementById('ambient-vol-val'),
-        ambientVolIcon: document.getElementById('ambient-vol-icon'),
-
-        // Stats Matrix & Heatmap
-        scorePercent: document.getElementById('score-percent'),
-        scoreRing: document.getElementById('score-ring'),
-        statRatio: document.getElementById('stat-ratio'),
-        statQuote: document.getElementById('stat-quote'),
-        heatmapGrid: document.getElementById('heatmap-grid'),
-        statTotal: document.getElementById('stat-total'),
-        statActive: document.getElementById('stat-active'),
-        statDone: document.getElementById('stat-done'),
-
-        // Toolbar, Tasks & Kanban
-        searchInput: document.getElementById('search-input'),
-        searchClearBtn: document.getElementById('search-clear-btn'),
-        filterTabs: document.querySelectorAll('.filter-tab'),
-        tabCountAll: document.getElementById('tab-count-all'),
-        tabCountActive: document.getElementById('tab-count-active'),
-        tabCountCompleted: document.getElementById('tab-count-completed'),
-        filterCategory: document.getElementById('filter-category'),
-        filterPriority: document.getElementById('filter-priority'),
-        sortOrder: document.getElementById('sort-order'),
-        btnResetFilters: document.getElementById('reset-filters-btn'),
-        btnViewList: document.getElementById('btn-view-list'),
-        btnViewKanban: document.getElementById('btn-view-kanban'),
-        clearDoneBtn: document.getElementById('clear-done-btn'),
-        tasksListView: document.getElementById('tasks-list-view'),
-        taskStream: document.getElementById('task-stream'),
-        kanbanView: document.getElementById('kanban-view'),
-        kbZones: {
-            todo: document.getElementById('kb-zone-todo'),
-            inprogress: document.getElementById('kb-zone-inprogress'),
-            completed: document.getElementById('kb-zone-completed')
-        },
-        kbCounts: {
-            todo: document.getElementById('kb-count-todo'),
-            inprogress: document.getElementById('kb-count-inprogress'),
-            completed: document.getElementById('kb-count-completed')
-        },
-        kbQuickAdds: document.querySelectorAll('.kb-quick-add'),
-
-        // Inspector Drawer
-        drawerBackdrop: document.getElementById('drawer-backdrop'),
-        inspectorDrawer: document.getElementById('inspector-drawer'),
-        drawerTaskId: document.getElementById('drawer-task-id'),
-        drawerTaskTitle: document.getElementById('drawer-task-title'),
-        drawerTaskStatus: document.getElementById('drawer-task-status'),
-        drawerTaskPrio: document.getElementById('drawer-task-prio'),
-        drawerTaskCat: document.getElementById('drawer-task-cat'),
-        drawerTaskDue: document.getElementById('drawer-task-due'),
-        drawerSubtasksCount: document.getElementById('drawer-subtasks-count'),
-        drawerNewSubtask: document.getElementById('drawer-new-subtask'),
-        drawerAddSubtaskBtn: document.getElementById('drawer-add-subtask-btn'),
-        drawerSubtasksList: document.getElementById('drawer-subtasks-list'),
-        drawerTaskNotes: document.getElementById('drawer-task-notes'),
-        drawerStarBtn: document.getElementById('drawer-star-btn'),
-        drawerCloseBtn: document.getElementById('drawer-close-btn'),
-        drawerDeleteBtn: document.getElementById('drawer-delete-btn'),
-        drawerSaveBtn: document.getElementById('drawer-save-btn'),
-
-        // Modals
-        shortcutsModal: document.getElementById('shortcuts-modal'),
-        shortcutsClose: document.getElementById('shortcuts-close'),
-        backupModal: document.getElementById('backup-modal'),
-        backupClose: document.getElementById('backup-close'),
-        btnExportJson: document.getElementById('btn-export-json'),
-        btnExportCsv: document.getElementById('btn-export-csv'),
-        btnLoadDemo: document.getElementById('btn-load-demo')
-    };
-
-    /* ==========================================================================
-       9. STORAGE & STATE PERSISTENCE
-       ========================================================================== */
-    function loadStorage() {
-        try {
-            const raw = localStorage.getItem('tf_hyper_tasks');
-            State.tasks = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEMO_TASKS));
-
-            const rawProfile = localStorage.getItem('tf_hyper_profile');
-            if (rawProfile) State.userProfile = Object.assign(State.userProfile, JSON.parse(rawProfile));
-
-            const savedTheme = localStorage.getItem('tf_hyper_theme') || 'hyper-prism';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeActiveUI(savedTheme);
-        } catch (e) {
-            console.error('Storage error:', e);
-            State.tasks = JSON.parse(JSON.stringify(DEMO_TASKS));
-        }
-    }
-
-    function saveStorage() {
-        try {
-            localStorage.setItem('tf_hyper_tasks', JSON.stringify(State.tasks));
-            localStorage.setItem('tf_hyper_profile', JSON.stringify(State.userProfile));
-        } catch (e) {
-            console.error('Save error:', e);
-        }
-    }
-
-    /* ==========================================================================
-       10. GAMIFICATION & LEVELS
-       ========================================================================== */
-    const LEVEL_TIERS = [
-        { min: 0, title: 'Novice I' },
-        { min: 100, title: 'Apprentice II' },
-        { min: 250, title: 'Achiever III' },
-        { min: 500, title: 'Focus Champion IV' },
-        { min: 900, title: 'Productivity Ninja V' },
-        { min: 1400, title: 'Hyper Grandmaster 🧙‍♂️' }
-    ];
-
-    function getLevelInfo(xp) {
-        let cur = LEVEL_TIERS[0];
-        let next = LEVEL_TIERS[1];
-        for (let i = 0; i < LEVEL_TIERS.length; i++) {
-            if (xp >= LEVEL_TIERS[i].min) {
-                cur = LEVEL_TIERS[i];
-                next = LEVEL_TIERS[i + 1] || null;
+            let priority = 'medium';
+            const activePrioChip = document.querySelector('.chip-prio.active');
+            if (activePrioChip && activePrioChip.dataset.prio) {
+                priority = activePrioChip.dataset.prio;
             }
+
+            let category = this.elProjectSelect ? this.elProjectSelect.value : '👤 Personal';
+            let dueDate = this.elDueDateInput ? this.elDueDateInput.value : '';
+
+            // Check for !high, !medium, !low
+            if (rawTitle.includes('!high')) {
+                priority = 'high';
+                rawTitle = rawTitle.replace('!high', '');
+            } else if (rawTitle.includes('!med') || rawTitle.includes('!medium')) {
+                priority = 'medium';
+                rawTitle = rawTitle.replace(/!med(ium)?/, '');
+            } else if (rawTitle.includes('!low')) {
+                priority = 'low';
+                rawTitle = rawTitle.replace('!low', '');
+            }
+
+            // Check for #work, #dev, #personal, #fitness, #creative
+            const catMap = {
+                '#work': '💼 Work',
+                '#dev': '💻 Development',
+                '#code': '💻 Development',
+                '#personal': '👤 Personal',
+                '#life': '👤 Personal',
+                '#fit': '💪 Fitness',
+                '#fitness': '💪 Fitness',
+                '#creative': '🎨 Creative',
+                '#design': '🎨 Creative'
+            };
+            for (const [tag, mappedCat] of Object.entries(catMap)) {
+                if (rawTitle.toLowerCase().includes(tag)) {
+                    category = mappedCat;
+                    rawTitle = rawTitle.replace(new RegExp(tag, 'i'), '');
+                    break;
+                }
+            }
+
+            // Check for @today or @tomorrow
+            if (rawTitle.toLowerCase().includes('@today')) {
+                dueDate = new Date().toISOString().split('T')[0];
+                rawTitle = rawTitle.replace(/@today/i, '');
+            } else if (rawTitle.toLowerCase().includes('@tomorrow') || rawTitle.toLowerCase().includes('@tmrw')) {
+                const tmrw = new Date();
+                tmrw.setDate(tmrw.getDate() + 1);
+                dueDate = tmrw.toISOString().split('T')[0];
+                rawTitle = rawTitle.replace(/@(tomorrow|tmrw)/i, '');
+            }
+
+            const cleanTitle = rawTitle.replace(/\s+/g, ' ').trim();
+            if (!cleanTitle) return;
+
+            // Create task
+            const newTask = this.state.addTask({
+                title: cleanTitle,
+                priority,
+                category,
+                dueDate,
+                subtasks: [...this.state.stagedSubtasks]
+            });
+
+            // Reset Composer
+            this.elTaskInput.value = '';
+            this.state.stagedSubtasks = [];
+            this.renderStagedShelf();
+            if (this.elDueDateInput) this.elDueDateInput.value = '';
+
+            this.sound.playChime();
+            this.renderAll();
+            this.showToast(`Task added: "${newTask.title}"`);
         }
-        const prevMin = cur.min;
-        const nextMin = next ? next.min : prevMin + 500;
-        const percent = Math.min(100, Math.floor(((xp - prevMin) / (nextMin - prevMin)) * 100));
-        return { title: cur.title, xp, nextXp: nextMin, percent };
-    }
 
-    function awardXp(amount) {
-        const oldInfo = getLevelInfo(State.userProfile.xp);
-        State.userProfile.xp += amount;
-        const newInfo = getLevelInfo(State.userProfile.xp);
+        /* ----------------------------------------------------------------------
+           AI SUBTASK BREAKDOWN
+           ---------------------------------------------------------------------- */
+        generateSubtasks() {
+            const rawTitle = (this.elTaskInput ? this.elTaskInput.value : '').trim();
+            if (!rawTitle) {
+                this.showToast('Please type a task title first to generate subtasks.');
+                if (this.elTaskInput) this.elTaskInput.focus();
+                return;
+            }
 
-        if (newInfo.title !== oldInfo.title) {
-            confetti.burst();
-            sound.playChime();
-            toast.show({ message: `🎉 LEVEL UP! You reached ${newInfo.title}!`, icon: '⚡', duration: 5000 });
+            const suggestions = this.getSmartSubtasks(rawTitle);
+            this.state.stagedSubtasks = suggestions.map(text => ({ text, completed: false }));
+            this.renderStagedShelf();
+            this.sound.playPop();
+            this.showToast('Subtasks generated!');
         }
-        updateProfileDisplay();
-        saveStorage();
-    }
 
-    function updateStreakOnCompletion() {
-        const todayStr = new Date().toISOString().split('T')[0];
-        const last = State.userProfile.lastStreakDate;
-        if (!last) {
-            State.userProfile.streak = 1;
-            State.userProfile.lastStreakDate = todayStr;
-        } else if (last === todayStr) {
-            // Already counted today
-        } else {
-            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-            if (last === yesterday) {
-                State.userProfile.streak += 1;
+        getSmartSubtasks(title) {
+            const lower = title.toLowerCase();
+            if (lower.includes('deploy') || lower.includes('release') || lower.includes('launch')) {
+                return [
+                    'Run full test suite & linting',
+                    'Verify responsive layout & accessibility',
+                    'Configure environment & domain DNS',
+                    'Execute deployment & monitor health logs'
+                ];
+            } else if (lower.includes('design') || lower.includes('ui') || lower.includes('ux')) {
+                return [
+                    'Research inspiring references & moodboard',
+                    'Draft component wireframes & tokens',
+                    'Implement high-fidelity responsive layout',
+                    'Test contrast, touch targets, and hover states'
+                ];
+            } else if (lower.includes('bug') || lower.includes('fix') || lower.includes('issue')) {
+                return [
+                    'Reproduce issue and write isolated test case',
+                    'Trace root cause in inspector / call stack',
+                    'Implement fix and verify across edge cases',
+                    'Review diff and commit clean patch'
+                ];
+            } else if (lower.includes('meeting') || lower.includes('sync') || lower.includes('call')) {
+                return [
+                    'Outline agenda and key decisions needed',
+                    'Gather relevant links and metrics',
+                    'Facilitate discussion & record action items',
+                    'Send post-meeting recap to stakeholders'
+                ];
+            } else if (lower.includes('write') || lower.includes('article') || lower.includes('docs')) {
+                return [
+                    'Brainstorm core takeaways & outline',
+                    'Draft first pass without editing',
+                    'Refine prose, formatting, and code snippets',
+                    'Publish and share with audience'
+                ];
             } else {
-                State.userProfile.streak = 1;
+                return [
+                    `Define scope and objectives for "${title.slice(0, 24)}..."`,
+                    'Break down initial implementation steps',
+                    'Execute core task and review quality',
+                    'Final review and wrap up'
+                ];
             }
-            State.userProfile.lastStreakDate = todayStr;
         }
-        updateProfileDisplay();
-    }
 
-    function updateProfileDisplay() {
-        const info = getLevelInfo(State.userProfile.xp);
-        if (DOM.streakCount) DOM.streakCount.textContent = State.userProfile.streak;
-        if (DOM.levelTitle) DOM.levelTitle.textContent = info.title;
-        if (DOM.levelXp) DOM.levelXp.textContent = `${info.xp} / ${info.nextXp} XP`;
-        if (DOM.xpMeterBar) DOM.xpMeterBar.style.width = `${info.percent}%`;
-    }
+        renderStagedShelf() {
+            if (!this.elStagedShelf || !this.elShelfList) return;
 
-    /* ==========================================================================
-       11. TROPHIES & ACHIEVEMENTS SHOWCASE SYSTEM
-       ========================================================================== */
-    const TROPHIES = [
-        {
-            id: 'first_step',
-            title: 'First Step',
-            icon: '🌱',
-            desc: 'Conquer your first completed task in TaskFlow Hyper.',
-            check: () => State.tasks.filter(t => t.completed).length >= 1
-        },
-        {
-            id: 'rapid_fire',
-            title: 'Rapid Fire',
-            icon: '⚡',
-            desc: 'Complete 3 tasks across your active workspaces.',
-            check: () => State.tasks.filter(t => t.completed).length >= 3
-        },
-        {
-            id: 'high_impact',
-            title: 'High-Impact Pro',
-            icon: '🔥',
-            desc: 'Conquer a critical High-Priority task.',
-            check: () => State.tasks.some(t => t.completed && t.priority === 'high')
-        },
-        {
-            id: 'streak_igniter',
-            title: 'Streak Igniter',
-            icon: '🌟',
-            desc: 'Maintain a 3+ day consecutive activity streak.',
-            check: () => State.userProfile.streak >= 3
-        },
-        {
-            id: 'checklist_pro',
-            title: 'Checklist Pro',
-            icon: '📋',
-            desc: 'Check off at least 3 nested subtasks.',
-            check: () => State.tasks.reduce((acc, t) => acc + (t.subtasks || []).filter(s => s.completed).length, 0) >= 3
-        },
-        {
-            id: 'xp_hunter',
-            title: 'XP Hunter',
-            icon: '💎',
-            desc: 'Amass 200+ Experience Points in your journey.',
-            check: () => State.userProfile.xp >= 200
-        },
-        {
-            id: 'deep_diver',
-            title: 'Deep Diver',
-            icon: '🧘',
-            desc: 'Initiate or finish a Cyber Focus Studio session.',
-            check: () => State.pomodoro.isRunning || State.userProfile.xp >= 250
-        },
-        {
-            id: 'grandmaster',
-            title: 'Hyper Grandmaster',
-            icon: '👑',
-            desc: 'Achieve 350+ XP and conquer 5+ tasks.',
-            check: () => State.userProfile.xp >= 350 && State.tasks.filter(t => t.completed).length >= 5
-        }
-    ];
-
-    function renderTrophies() {
-        if (!DOM.trophiesGrid) return;
-        DOM.trophiesGrid.innerHTML = '';
-
-        TROPHIES.forEach(tr => {
-            const unlocked = tr.check();
-            const card = document.createElement('div');
-            card.className = `trophy-card ${unlocked ? 'unlocked' : 'locked'}`;
-
-            card.innerHTML = `
-                <div class="trophy-icon">${tr.icon}</div>
-                <div class="trophy-info">
-                    <div class="trophy-title">${escapeHtml(tr.title)}</div>
-                    <div class="trophy-desc">${escapeHtml(tr.desc)}</div>
-                    <span class="trophy-status ${unlocked ? 'unlocked' : 'locked'}">
-                        ${unlocked ? '✓ Unlocked' : '🔒 Locked'}
-                    </span>
-                </div>
-            `;
-            DOM.trophiesGrid.appendChild(card);
-        });
-    }
-
-    if (DOM.openAchievementsBtn) {
-        DOM.openAchievementsBtn.onclick = () => {
-            renderTrophies();
-            DOM.achievementsModal.classList.remove('hidden');
-            sound.playPop();
-        };
-    }
-
-    if (DOM.achievementsClose) {
-        DOM.achievementsClose.onclick = () => {
-            DOM.achievementsModal.classList.add('hidden');
-        };
-    }
-
-    /* ==========================================================================
-       12. LIVE CLOCK & MOUSE SPOTLIGHT
-       ========================================================================== */
-    function startLiveClock() {
-        function update() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
-            if (DOM.liveClockDigits) DOM.liveClockDigits.textContent = timeStr;
-            if (DOM.liveClockDate) DOM.liveClockDate.textContent = dateStr;
-        }
-        update();
-        setInterval(update, 1000);
-    }
-
-    function setupSpotlight() {
-        window.addEventListener('mousemove', (e) => {
-            if (DOM.cursorGlow) {
-                DOM.cursorGlow.style.left = `${e.clientX}px`;
-                DOM.cursorGlow.style.top = `${e.clientY}px`;
+            if (this.state.stagedSubtasks.length === 0) {
+                this.elStagedShelf.classList.add('hidden');
+                this.elShelfList.innerHTML = '';
+                return;
             }
 
-            document.querySelectorAll('.spotlight-card').forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
-            });
-        });
-    }
+            this.elStagedShelf.classList.remove('hidden');
+            this.elShelfList.innerHTML = '';
 
-    /* ==========================================================================
-       13. 30-DAY ACTIVITY VELOCITY HEATMAP
-       ========================================================================== */
-    function renderHeatmap() {
-        if (!DOM.heatmapGrid) return;
-        DOM.heatmapGrid.innerHTML = '';
+            this.state.stagedSubtasks.forEach((st, idx) => {
+                const item = document.createElement('div');
+                item.className = 'shelf-item';
 
-        // Tally completions over the last 30 days
-        const today = new Date();
-        const counts = {};
+                const textSpan = document.createElement('span');
+                textSpan.className = 'shelf-item-text';
+                textSpan.textContent = `• ${st.text}`;
 
-        // Seed with realistic demo velocity baseline for richness
-        for (let i = 29; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(today.getDate() - i);
-            const key = d.toISOString().split('T')[0];
-            counts[key] = (i === 0 ? 1 : (i % 7 === 1 ? 4 : (i % 3 === 0 ? 2 : (i % 5 === 0 ? 3 : 0))));
-        }
+                const rmBtn = document.createElement('button');
+                rmBtn.type = 'button';
+                rmBtn.className = 'shelf-item-remove';
+                rmBtn.innerHTML = '&times;';
+                rmBtn.title = 'Remove';
+                rmBtn.addEventListener('click', () => {
+                    this.state.stagedSubtasks.splice(idx, 1);
+                    this.renderStagedShelf();
+                });
 
-        // Add real task completions
-        State.tasks.forEach(t => {
-            if (t.completed) {
-                const dateKey = new Date(t.completedAt || t.createdAt).toISOString().split('T')[0];
-                counts[dateKey] = (counts[dateKey] || 0) + 1;
-            }
-        });
-
-        // Render 30 cells
-        for (let i = 29; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(today.getDate() - i);
-            const key = d.toISOString().split('T')[0];
-            const dateStr = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
-            const c = counts[key] || 0;
-
-            let level = 'lv0';
-            if (c >= 5) level = 'lv3';
-            else if (c >= 3) level = 'lv2';
-            else if (c >= 1) level = 'lv1';
-
-            const cell = document.createElement('div');
-            cell.className = `heatmap-cell ${level}`;
-            cell.title = `${dateStr}: ${c} tasks conquered`;
-            DOM.heatmapGrid.appendChild(cell);
-        }
-    }
-
-    /* ==========================================================================
-       14. AI PRODUCTIVITY COACH
-       ========================================================================== */
-    const COACH_ADVICE = [
-        "Focus on one high-impact task at a time. Multi-tasking reduces productivity by up to 40%.",
-        "Action breeds clarity. Don't wait for motivation — launch a 5-minute timer and flow will follow.",
-        "The 80/20 Rule: 20% of your tasks generate 80% of your results. Conquer them first!",
-        "Take a 5-minute break every 25 minutes to restore cognitive reserves and prevent fatigue.",
-        "Break large overwhelming goals into bite-sized 10-minute checklist milestones.",
-        "Celebrate small wins! Every task checked off triggers dopamine and reinforces momentum."
-    ];
-
-    let coachIndex = 0;
-
-    function initCoach() {
-        updateCoachAdvice();
-
-        if (DOM.coachInspireBtn) {
-            DOM.coachInspireBtn.onclick = () => {
-                coachIndex = (coachIndex + 1) % COACH_ADVICE.length;
-                if (DOM.coachText) DOM.coachText.textContent = COACH_ADVICE[coachIndex];
-                sound.playPop();
-            };
-        }
-
-        if (DOM.coachSprintBtn) {
-            DOM.coachSprintBtn.onclick = () => {
-                // Find highest priority active task
-                const activeHigh = State.tasks.find(t => !t.completed && t.priority === 'high');
-                const anyActive = activeHigh || State.tasks.find(t => !t.completed);
-
-                if (anyActive) {
-                    setFocusTarget(anyActive.id);
-                }
-
-                // Switch to 25m work pill
-                DOM.focusPills.forEach(p => p.classList.toggle('active', p.dataset.mins === '25'));
-                State.pomodoro.duration = 25 * 60;
-                State.pomodoro.timeLeft = 25 * 60;
-
-                if (!State.pomodoro.isRunning) {
-                    toggleTimer();
-                }
-
-                sound.playChime();
-                toast.show({ message: '⚡ 25-Minute Focus Sprint Launched!', icon: '🎯' });
-            };
-        }
-    }
-
-    function updateCoachAdvice() {
-        if (!DOM.coachText) return;
-        const activeHigh = State.tasks.filter(t => !t.completed && t.priority === 'high').length;
-        if (activeHigh > 0) {
-            DOM.coachText.textContent = `You have ${activeHigh} high-priority task${activeHigh > 1 ? 's' : ''} in your pipeline. Ready for a 25-minute deep focus sprint?`;
-        } else {
-            DOM.coachText.textContent = COACH_ADVICE[coachIndex];
-        }
-    }
-
-    /* ==========================================================================
-       15. FULLSCREEN ZEN MODE PORTAL
-       ========================================================================== */
-    const ZEN_QUOTES = [
-        '"Focus is a muscle. Train it in silence."',
-        '"Do one thing with complete devotion."',
-        '"Simplicity is the prerequisite for great focus."',
-        '"Distraction is the thief of your potential."',
-        '"Deep focus transforms minutes into mastery."'
-    ];
-
-    function openZenMode() {
-        if (!DOM.zenOverlay) return;
-        DOM.zenOverlay.classList.remove('hidden');
-
-        // Pick random quote
-        if (DOM.zenQuote) {
-            const rand = ZEN_QUOTES[Math.floor(Math.random() * ZEN_QUOTES.length)];
-            DOM.zenQuote.textContent = rand;
-        }
-
-        updateZenDisplay();
-        sound.playPop();
-    }
-
-    function closeZenMode() {
-        if (!DOM.zenOverlay) return;
-        DOM.zenOverlay.classList.add('hidden');
-        sound.playPop();
-    }
-
-    function updateZenDisplay() {
-        if (!DOM.zenTimerDigits) return;
-        DOM.zenTimerDigits.textContent = formatTime(State.pomodoro.timeLeft);
-
-        let targetName = 'General Deep Focus';
-        if (State.pomodoro.targetTaskId) {
-            const t = State.tasks.find(tk => tk.id === State.pomodoro.targetTaskId);
-            if (t) targetName = t.text;
-        }
-        if (DOM.zenTaskTitle) DOM.zenTaskTitle.textContent = targetName;
-        if (DOM.zenToggleBtn) DOM.zenToggleBtn.textContent = State.pomodoro.isRunning ? 'Pause Focus' : 'Start Focus';
-    }
-
-    if (DOM.openZenBtn) DOM.openZenBtn.onclick = openZenMode;
-    if (DOM.zenExitBtn) DOM.zenExitBtn.onclick = closeZenMode;
-    if (DOM.zenToggleBtn) DOM.zenToggleBtn.onclick = toggleTimer;
-    if (DOM.zenResetBtn) DOM.zenResetBtn.onclick = resetTimer;
-    if (DOM.dynamicIslandHud) DOM.dynamicIslandHud.onclick = openZenMode;
-
-    /* ==========================================================================
-       16. NATURAL LANGUAGE PARSER & AI SUBTASKS
-       ========================================================================== */
-    function parseNaturalLanguage(raw) {
-        let text = raw;
-        let priority = null;
-        let category = null;
-        let dueDate = null;
-
-        const pMatch = text.match(/!(high|med|medium|low)\b/i);
-        if (pMatch) {
-            const p = pMatch[1].toLowerCase();
-            priority = (p === 'med' || p === 'medium') ? 'medium' : p;
-            text = text.replace(pMatch[0], '');
-        }
-
-        const catMatch = text.match(/#(work|personal|dev|coding|fitness|health|creative)\b/i);
-        if (catMatch) {
-            const c = catMatch[1].toLowerCase();
-            if (c.includes('work')) category = '💼 Work';
-            else if (c.includes('dev') || c.includes('cod')) category = '💻 Development';
-            else if (c.includes('fit') || c.includes('health')) category = '💪 Fitness';
-            else if (c.includes('creat')) category = '🎨 Creative';
-            else category = '👤 Personal';
-            text = text.replace(catMatch[0], '');
-        }
-
-        const dMatch = text.match(/@(today|tomorrow)\b/i);
-        if (dMatch) {
-            const d = dMatch[1].toLowerCase();
-            const date = new Date();
-            if (d === 'tomorrow') date.setDate(date.getDate() + 1);
-            dueDate = date.toISOString().split('T')[0];
-            text = text.replace(dMatch[0], '');
-        }
-
-        return { cleanText: text.trim().replace(/\s{2,}/g, ' '), priority, category, dueDate };
-    }
-
-    function generateAiSubtasks(title) {
-        const t = title.toLowerCase();
-        if (t.includes('landing') || t.includes('website') || t.includes('app') || t.includes('code')) {
-            return ['Plan component architecture', 'Code interactive UI features', 'Test responsiveness & deploy'];
-        } else if (t.includes('presentation') || t.includes('deck') || t.includes('pitch')) {
-            return ['Outline narrative & slide flow', 'Design key graphics and data visuals', 'Rehearse speech & timing'];
-        } else if (t.includes('workout') || t.includes('gym') || t.includes('run')) {
-            return ['5 min warmup mobility', 'Main progressive overload sets', 'Cooldown stretch & recovery'];
-        } else if (t.includes('study') || t.includes('exam') || t.includes('book')) {
-            return ['Review core chapters', 'Create active recall flashcards', 'Practice sample mock questions'];
-        } else {
-            return ['Define requirements & scope', 'Execute milestone tasks', 'Review and finalize deliverable'];
-        }
-    }
-
-    /* ==========================================================================
-       17. TASK CREATION, EDITING & DELETION
-       ========================================================================== */
-    function addTask() {
-        const raw = DOM.taskInput.value.trim();
-        if (!raw) return;
-
-        const parsed = parseNaturalLanguage(raw);
-        const title = parsed.cleanText || raw;
-
-        const priority = parsed.priority || State.activeComposerPriority;
-        const category = parsed.category || DOM.projectSelect.value;
-        const dueDate = parsed.dueDate || DOM.dueDateInput.value;
-
-        const subtasks = State.stagedSubtasks.map((st, i) => ({
-            id: Date.now() + i,
-            text: st,
-            completed: false
-        }));
-
-        const newTask = {
-            id: Date.now(),
-            text: title,
-            completed: false,
-            status: 'todo',
-            priority,
-            category,
-            dueDate,
-            starred: false,
-            notes: '',
-            subtasks,
-            createdAt: Date.now()
-        };
-
-        State.tasks.unshift(newTask);
-        sound.playPop();
-
-        DOM.taskInput.value = '';
-        DOM.dueDateInput.value = '';
-        State.stagedSubtasks = [];
-        renderStagedShelf();
-
-        saveStorage();
-        renderAll();
-        updateCoachAdvice();
-
-        toast.show({ message: `Added to ${category}!`, icon: '✨' });
-    }
-
-    function toggleTask(id) {
-        const task = State.tasks.find(t => t.id === id);
-        if (!task) return;
-
-        task.completed = !task.completed;
-        task.status = task.completed ? 'completed' : 'todo';
-        if (task.completed) task.completedAt = Date.now();
-
-        if (task.completed) {
-            sound.playChime();
-            confetti.burst();
-            const xpGains = { high: 50, medium: 35, low: 20 };
-            const gain = xpGains[task.priority] || 25;
-            awardXp(gain);
-            updateStreakOnCompletion();
-            toast.show({ message: `Task completed! +${gain} XP`, icon: '🏆' });
-        } else {
-            sound.playPop();
-        }
-
-        saveStorage();
-        renderAll();
-        updateCoachAdvice();
-    }
-
-    function deleteTask(id) {
-        const idx = State.tasks.findIndex(t => t.id === id);
-        if (idx === -1) return;
-
-        const removed = State.tasks.splice(idx, 1)[0];
-        State.lastDeleted = { task: removed, index: idx };
-        sound.playSwoosh();
-
-        if (DOM.drawerBackdrop && !DOM.drawerBackdrop.classList.contains('hidden')) {
-            DOM.drawerBackdrop.classList.add('hidden');
-        }
-
-        saveStorage();
-        renderAll();
-        updateCoachAdvice();
-
-        toast.show({
-            message: `Deleted "${removed.text.slice(0, 20)}..."`,
-            icon: '🗑️',
-            actionText: 'Undo',
-            duration: 5000,
-            onAction: () => {
-                if (State.lastDeleted) {
-                    State.tasks.splice(State.lastDeleted.index, 0, State.lastDeleted.task);
-                    sound.playPop();
-                    saveStorage();
-                    renderAll();
-                    updateCoachAdvice();
-                    toast.show({ message: 'Task restored!', icon: '↩️' });
-                    State.lastDeleted = null;
-                }
-            }
-        });
-    }
-
-    function toggleStar(id) {
-        const task = State.tasks.find(t => t.id === id);
-        if (!task) return;
-        task.starred = !task.starred;
-        sound.playPop();
-        saveStorage();
-        renderAll();
-    }
-
-    function clearDone() {
-        const doneCount = State.tasks.filter(t => t.completed).length;
-        if (doneCount === 0) {
-            toast.show({ message: 'No completed tasks to clear.', icon: 'ℹ️' });
-            return;
-        }
-
-        State.tasks = State.tasks.filter(t => !t.completed);
-        sound.playSwoosh();
-        saveStorage();
-        renderAll();
-        updateCoachAdvice();
-        toast.show({ message: `Cleared ${doneCount} completed tasks!`, icon: '🧹' });
-    }
-
-    /* ==========================================================================
-       18. FILTER & SORT PIPELINE
-       ========================================================================== */
-    function getProcessedTasks() {
-        let result = [...State.tasks];
-
-        // Status Filter
-        if (State.currentFilter === 'active') result = result.filter(t => !t.completed);
-        else if (State.currentFilter === 'completed') result = result.filter(t => t.completed);
-
-        // Category Filter
-        if (State.filterCategory !== 'all') result = result.filter(t => t.category === State.filterCategory);
-
-        // Priority Filter
-        if (State.filterPriority !== 'all') result = result.filter(t => t.priority === State.filterPriority);
-
-        // Search Query
-        if (State.searchTerm) {
-            const q = State.searchTerm.toLowerCase();
-            result = result.filter(t => {
-                const titleMatch = t.text.toLowerCase().includes(q);
-                const catMatch = t.category.toLowerCase().includes(q);
-                const subMatch = t.subtasks && t.subtasks.some(s => s.text.toLowerCase().includes(q));
-                return titleMatch || catMatch || subMatch;
+                item.appendChild(textSpan);
+                item.appendChild(rmBtn);
+                this.elShelfList.appendChild(item);
             });
         }
 
-        // Sorting
-        const prioWeights = { high: 3, medium: 2, low: 1 };
-        result.sort((a, b) => {
-            // Starred items stay at the top
-            if (a.starred !== b.starred) return b.starred ? 1 : -1;
-            // Incomplete before completed
-            if (a.completed !== b.completed) return a.completed ? 1 : -1;
+        /* ----------------------------------------------------------------------
+           VIEW SWITCHER (LIST vs KANBAN)
+           ---------------------------------------------------------------------- */
+        switchView(viewName) {
+            this.state.currentView = viewName;
+            this.state.save();
+            this.sound.playPop();
 
-            switch (State.sortOrder) {
-                case 'priority':
-                    return (prioWeights[b.priority] || 0) - (prioWeights[a.priority] || 0);
-                case 'due':
-                    if (!a.dueDate) return 1;
-                    if (!b.dueDate) return -1;
-                    return new Date(a.dueDate) - new Date(b.dueDate);
-                case 'az':
-                    return a.text.localeCompare(b.text);
-                case 'newest':
-                default:
-                    return b.createdAt - a.createdAt;
+            if (this.elViewListBtn) {
+                this.elViewListBtn.classList.toggle('active', viewName === 'list');
             }
-        });
+            if (this.elViewKanbanBtn) {
+                this.elViewKanbanBtn.classList.toggle('active', viewName === 'kanban');
+            }
 
-        return result;
-    }
+            if (this.elListView) {
+                this.elListView.classList.toggle('hidden', viewName !== 'list');
+            }
+            if (this.elKanbanView) {
+                this.elKanbanView.classList.toggle('hidden', viewName !== 'kanban');
+            }
 
-    /* ==========================================================================
-       19. RENDERING & UI SYNC
-       ========================================================================== */
-    function renderAll() {
-        renderStats();
-        renderHeatmap();
-        if (State.viewMode === 'list') {
-            DOM.tasksListView.classList.remove('hidden');
-            DOM.kanbanView.classList.add('hidden');
-            renderListView();
-        } else {
-            DOM.tasksListView.classList.add('hidden');
-            DOM.kanbanView.classList.remove('hidden');
-            renderKanbanView();
-        }
-    }
-
-    function renderStats() {
-        const total = State.tasks.length;
-        const done = State.tasks.filter(t => t.completed).length;
-        const active = total - done;
-        const pct = total === 0 ? 0 : Math.round((done / total) * 100);
-
-        if (DOM.statTotal) DOM.statTotal.textContent = total;
-        if (DOM.statActive) DOM.statActive.textContent = active;
-        if (DOM.statDone) DOM.statDone.textContent = done;
-        if (DOM.scorePercent) DOM.scorePercent.textContent = `${pct}%`;
-        if (DOM.statRatio) DOM.statRatio.textContent = `${done} of ${total} Completed`;
-
-        // Update score SVG ring
-        if (DOM.scoreRing) {
-            const circumference = 2 * Math.PI * 38; // ~238.7
-            const offset = circumference - (pct / 100) * circumference;
-            DOM.scoreRing.style.strokeDashoffset = offset;
+            this.renderTasks();
         }
 
-        // Update filter tabs counters
-        if (DOM.tabCountAll) DOM.tabCountAll.textContent = total;
-        if (DOM.tabCountActive) DOM.tabCountActive.textContent = active;
-        if (DOM.tabCountCompleted) DOM.tabCountCompleted.textContent = done;
-
-        // Reset Filters visibility
-        if (DOM.btnResetFilters) {
-            const hasFilter = State.currentFilter !== 'all' || State.filterCategory !== 'all' || State.filterPriority !== 'all' || State.searchTerm !== '';
-            DOM.btnResetFilters.classList.toggle('hidden', !hasFilter);
-        }
-    }
-
-    function renderListView() {
-        const tasks = getProcessedTasks();
-        DOM.taskStream.innerHTML = '';
-
-        if (tasks.length === 0) {
-            DOM.taskStream.innerHTML = `
-                <div style="text-align: center; padding: 50px 20px; color: var(--text-muted);">
-                    <div style="font-size: 2.5rem; margin-bottom: 8px;">🚀</div>
-                    <h3 style="font-size: 1.2rem; color: var(--text-primary); font-family: var(--font-heading);">All Clear!</h3>
-                    <p style="font-size: 0.86rem; margin-top: 4px;">No tasks match your current view. Add one with the composer above.</p>
-                </div>
-            `;
-            return;
+        /* ----------------------------------------------------------------------
+           MAIN RENDERING: OVERVIEW, STATS & TASKS
+           ---------------------------------------------------------------------- */
+        renderAll() {
+            this.renderOverview();
+            this.renderTasks();
+            this.checkActiveFilters();
         }
 
-        tasks.forEach(t => {
+        renderOverview() {
+            const total = this.state.tasks.length;
+            const completed = this.state.tasks.filter(t => t.status === 'completed').length;
+            const active = total - completed;
+            const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+            if (this.elStatRatio) {
+                this.elStatRatio.textContent = `${completed} of ${total} Completed (${pct}%)`;
+            }
+            if (this.elProgressBar) {
+                this.elProgressBar.style.width = `${pct}%`;
+            }
+            if (this.elStatTotal) this.elStatTotal.textContent = total;
+            if (this.elStatActive) this.elStatActive.textContent = active;
+            if (this.elStatDone) this.elStatDone.textContent = completed;
+            if (this.elStatStreak) this.elStatStreak.textContent = `${this.state.profile.streak}🔥`;
+
+            // Update Tab counts
+            if (this.elTabCntAll) this.elTabCntAll.textContent = total;
+            if (this.elTabCntActive) this.elTabCntActive.textContent = active;
+            if (this.elTabCntDone) this.elTabCntDone.textContent = completed;
+        }
+
+        renderTasks() {
+            const filtered = this.state.getFilteredTasks();
+
+            if (this.state.currentView === 'list') {
+                this.renderListView(filtered);
+            } else {
+                this.renderKanbanView(filtered);
+            }
+        }
+
+        /* ----------------------------------------------------------------------
+           LIST VIEW RENDERING
+           ---------------------------------------------------------------------- */
+        renderListView(tasks) {
+            if (!this.elTaskList) return;
+            this.elTaskList.innerHTML = '';
+
+            if (tasks.length === 0) {
+                const empty = document.createElement('li');
+                empty.className = 'empty-state';
+                const hasFilters = this.state.searchQuery || this.state.filterStatus !== 'all' || this.state.filterCategory !== 'all' || this.state.filterPriority !== 'all';
+                empty.innerHTML = `
+                    <div class="empty-icon">${hasFilters ? '🔍' : '📝'}</div>
+                    <h3 class="empty-title">${hasFilters ? 'No tasks match your filters' : 'No tasks yet'}</h3>
+                    <p class="empty-desc">${hasFilters ? 'Try resetting your search query or filters above.' : 'Type a task in the composer above and press Enter to get started.'}</p>
+                `;
+                this.elTaskList.appendChild(empty);
+                return;
+            }
+
+            tasks.forEach(task => {
+                const li = this.createTaskListItem(task);
+                this.elTaskList.appendChild(li);
+            });
+        }
+
+        createTaskListItem(task) {
             const li = document.createElement('li');
-            li.className = `task-card-row ${t.completed ? 'is-completed' : ''}`;
-            li.dataset.prio = t.priority;
-            li.dataset.id = t.id;
+            li.className = `task-item ${task.status === 'completed' ? 'is-done' : ''}`;
+            li.setAttribute('data-prio', task.priority);
+            li.dataset.id = task.id;
 
-            const prioClass = t.priority === 'high' ? 'tag-prio-high' : (t.priority === 'low' ? 'tag-prio-low' : 'tag-prio-med');
-            const prioEmoji = t.priority === 'high' ? '🔥 High' : (t.priority === 'low' ? '🟢 Low' : '⚡ Med');
-
-            // Due Date Badge
-            let dueBadge = '';
-            if (t.dueDate) {
-                const today = new Date().toISOString().split('T')[0];
-                const isOverdue = t.dueDate < today && !t.completed;
-                const isToday = t.dueDate === today;
-                dueBadge = `<span class="tag-bubble tag-due ${isOverdue ? 'overdue' : (isToday ? 'today' : '')}">📅 ${isToday ? 'Today' : (isOverdue ? 'Overdue' : t.dueDate)}</span>`;
-            }
-
-            // Subtasks Count
-            let subtasksBadge = '';
-            if (t.subtasks && t.subtasks.length > 0) {
-                const completedSub = t.subtasks.filter(s => s.completed).length;
-                subtasksBadge = `<span class="tag-bubble tag-subtasks">✓ ${completedSub}/${t.subtasks.length}</span>`;
-            }
-
-            li.innerHTML = `
-                <div class="task-check-circle ${t.completed ? 'checked' : ''}" title="${t.completed ? 'Mark pending' : 'Mark done'}">
-                    ${t.completed ? '✓' : ''}
-                </div>
-
-                <div class="task-info-block">
-                    <span class="task-text-title" title="Double click to rename inline">${escapeHtml(t.text)}</span>
-                    <div class="task-tags-row">
-                        <span class="tag-bubble ${prioClass}">${prioEmoji}</span>
-                        <span class="tag-bubble tag-category">${escapeHtml(t.category)}</span>
-                        ${dueBadge}
-                        ${subtasksBadge}
-                    </div>
-                </div>
-
-                <div class="task-actions-group">
-                    <button class="action-btn star-btn ${t.starred ? 'starred' : ''}" title="Star / Pin">
-                        ${t.starred ? '★' : '☆'}
-                    </button>
-                    <button class="action-btn focus-btn" title="Send to Focus Studio">
-                        ⏱️
-                    </button>
-                    <button class="action-btn delete-btn" title="Delete">
-                        &times;
-                    </button>
-                </div>
-            `;
-
-            // Inline Double-Click Edit
-            const titleSpan = li.querySelector('.task-text-title');
-            titleSpan.ondblclick = (e) => {
+            // Custom Checkbox
+            const check = document.createElement('div');
+            check.className = `task-checkbox ${task.status === 'completed' ? 'checked' : ''}`;
+            check.innerHTML = task.status === 'completed' ? '✓' : '';
+            check.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.className = 'inline-edit-input';
-                input.value = t.text;
-                titleSpan.replaceWith(input);
-                input.focus();
-                input.select();
-
-                let committed = false;
-                const commitEdit = () => {
-                    if (committed) return;
-                    committed = true;
-                    const newText = input.value.trim();
-                    if (newText && newText !== t.text) {
-                        t.text = newText;
-                        sound.playPop();
-                        saveStorage();
-                        renderAll();
-                        toast.show({ message: 'Task renamed!', icon: '✏️' });
-                    } else {
-                        renderAll();
-                    }
-                };
-
-                input.onkeydown = (ke) => {
-                    if (ke.key === 'Enter') {
-                        ke.preventDefault();
-                        commitEdit();
-                    } else if (ke.key === 'Escape') {
-                        committed = true;
-                        renderAll();
-                    }
-                };
-                input.onblur = commitEdit;
-            };
-
-            // Card Event Handlers
-            li.querySelector('.task-check-circle').onclick = (e) => {
-                e.stopPropagation();
-                toggleTask(t.id);
-            };
-
-            li.querySelector('.star-btn').onclick = (e) => {
-                e.stopPropagation();
-                toggleStar(t.id);
-            };
-
-            li.querySelector('.focus-btn').onclick = (e) => {
-                e.stopPropagation();
-                setFocusTarget(t.id);
-            };
-
-            li.querySelector('.delete-btn').onclick = (e) => {
-                e.stopPropagation();
-                deleteTask(t.id);
-            };
-
-            li.onclick = (e) => {
-                if (e.target.closest('.task-check-circle') || e.target.closest('.task-actions-group') || e.target.closest('.inline-edit-input')) return;
-                openInspector(t.id);
-            };
-
-            DOM.taskStream.appendChild(li);
-        });
-    }
-
-    function renderKanbanView() {
-        const tasks = getProcessedTasks();
-        Object.values(DOM.kbZones).forEach(z => z.innerHTML = '');
-
-        const counts = { todo: 0, inprogress: 0, completed: 0 };
-
-        tasks.forEach(t => {
-            const status = t.completed ? 'completed' : (t.status || 'todo');
-            if (counts[status] !== undefined) counts[status]++;
-
-            const card = document.createElement('div');
-            card.className = 'kb-item-card';
-            card.draggable = true;
-            card.dataset.id = t.id;
-
-            card.innerHTML = `
-                <div style="font-size:0.9rem; font-weight:600; color:var(--text-primary); word-break:break-word;">
-                    ${escapeHtml(t.text)}
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-muted); margin-top:4px;">
-                    <span>${t.priority === 'high' ? '🔥 High' : (t.priority === 'low' ? '🟢 Low' : '⚡ Med')}</span>
-                    <span>${escapeHtml(t.category)}</span>
-                </div>
-            `;
-
-            card.ondragstart = (e) => {
-                e.dataTransfer.setData('text/plain', t.id);
-                card.style.opacity = '0.5';
-            };
-            card.ondragend = () => card.style.opacity = '1';
-            card.onclick = () => openInspector(t.id);
-
-            if (DOM.kbZones[status]) DOM.kbZones[status].appendChild(card);
-        });
-
-        DOM.kbCounts.todo.textContent = counts.todo;
-        DOM.kbCounts.inprogress.textContent = counts.inprogress;
-        DOM.kbCounts.completed.textContent = counts.completed;
-    }
-
-    // Kanban Dropzone Listeners
-    Object.entries(DOM.kbZones).forEach(([status, zone]) => {
-        zone.ondragover = (e) => {
-            e.preventDefault();
-            zone.classList.add('drag-over');
-        };
-        zone.ondragleave = () => zone.classList.remove('drag-over');
-        zone.ondrop = (e) => {
-            e.preventDefault();
-            zone.classList.remove('drag-over');
-            const id = Number(e.dataTransfer.getData('text/plain'));
-            const task = State.tasks.find(t => t.id === id);
-            if (task) {
-                task.status = status;
-                task.completed = (status === 'completed');
-                if (task.completed) task.completedAt = Date.now();
-                sound.playPop();
-                if (task.completed) {
-                    confetti.burst();
-                    sound.playChime();
-                    awardXp(30);
-                }
-                saveStorage();
-                renderAll();
-                updateCoachAdvice();
-            }
-        };
-    });
-
-    // Kanban Quick Add Buttons
-    document.querySelectorAll('.kb-quick-add').forEach(btn => {
-        btn.onclick = () => {
-            const status = btn.dataset.status;
-            DOM.taskInput.focus();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            sound.playPop();
-            toast.show({ message: `Type in composer to add to "${status.toUpperCase()}"`, icon: '💡' });
-        };
-    });
-
-    /* ==========================================================================
-       20. FOCUS POMODORO STUDIO
-       ========================================================================== */
-    function setFocusTarget(taskId) {
-        const task = State.tasks.find(t => t.id === taskId);
-        if (!task) return;
-        State.pomodoro.targetTaskId = taskId;
-        DOM.timerTargetTag.textContent = `Target: ${task.text}`;
-        if (DOM.hudTaskName) DOM.hudTaskName.textContent = task.text;
-        if (DOM.zenTaskTitle) DOM.zenTaskTitle.textContent = task.text;
-        sound.playPop();
-        toast.show({ message: `Target focused: "${task.text.slice(0, 24)}..."`, icon: '🎯' });
-    }
-
-    function formatTime(s) {
-        const m = Math.floor(s / 60);
-        const sec = s % 60;
-        return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-    }
-
-    function updateTimerDisplay() {
-        const timeStr = formatTime(State.pomodoro.timeLeft);
-        DOM.timerDigits.textContent = timeStr;
-
-        // Dynamic Island HUD
-        if (DOM.hudTime) DOM.hudTime.textContent = timeStr;
-        if (DOM.dynamicIslandHud) {
-            DOM.dynamicIslandHud.classList.toggle('hidden', !State.pomodoro.isRunning);
-        }
-
-        // Zen Mode digits
-        if (DOM.zenTimerDigits) DOM.zenTimerDigits.textContent = timeStr;
-        if (DOM.zenToggleBtn) DOM.zenToggleBtn.textContent = State.pomodoro.isRunning ? 'Pause Focus' : 'Start Focus';
-
-        const circumference = 2 * Math.PI * 76; // ~477.5
-        const frac = State.pomodoro.timeLeft / State.pomodoro.duration;
-        const offset = circumference * (1 - frac);
-        DOM.timerProgressRing.style.strokeDashoffset = offset;
-
-        if (State.pomodoro.isRunning) {
-            document.title = `(${timeStr}) Cyber Focus Studio`;
-        } else {
-            document.title = 'TaskFlow Hyper Studio — Next-Gen Productivity Experience';
-        }
-    }
-
-    function toggleTimer() {
-        if (State.pomodoro.isRunning) {
-            clearInterval(State.pomodoro.interval);
-            State.pomodoro.isRunning = false;
-            DOM.timerToggleBtn.textContent = 'Resume Focus';
-            sound.playPop();
-        } else {
-            State.pomodoro.isRunning = true;
-            DOM.timerToggleBtn.textContent = 'Pause Focus';
-            sound.playPop();
-
-            State.pomodoro.interval = setInterval(() => {
-                if (State.pomodoro.timeLeft > 0) {
-                    State.pomodoro.timeLeft--;
-                    updateTimerDisplay();
+                const newStatus = task.status === 'completed' ? 'todo' : 'completed';
+                this.state.updateTask(task.id, { status: newStatus });
+                if (newStatus === 'completed') {
+                    this.sound.playChime();
                 } else {
-                    clearInterval(State.pomodoro.interval);
-                    State.pomodoro.isRunning = false;
-                    DOM.timerToggleBtn.textContent = 'Start Focus';
-                    sound.playAlarm();
-                    confetti.burst();
-
-                    const mins = Math.round(State.pomodoro.duration / 60);
-                    awardXp(mins * 2);
-
-                    toast.show({
-                        message: `🏆 Session Finished! +${mins * 2} XP earned`,
-                        icon: '🌟',
-                        duration: 6000
-                    });
-
-                    if (State.pomodoro.targetTaskId) {
-                        const target = State.tasks.find(t => t.id === State.pomodoro.targetTaskId);
-                        if (target && !target.completed) {
-                            if (confirm(`Did you complete your target task: "${target.text}"?`)) {
-                                toggleTask(target.id);
-                            }
-                        }
-                    }
-                    resetTimer();
+                    this.sound.playPop();
                 }
-            }, 1000);
-        }
-        updateTimerDisplay();
-    }
+                this.renderAll();
+            });
 
-    function resetTimer() {
-        clearInterval(State.pomodoro.interval);
-        State.pomodoro.isRunning = false;
-        State.pomodoro.timeLeft = State.pomodoro.duration;
-        DOM.timerToggleBtn.textContent = 'Start Focus';
-        updateTimerDisplay();
-    }
+            // Main Content Area
+            const main = document.createElement('div');
+            main.className = 'task-main';
 
-    DOM.timerToggleBtn.onclick = toggleTimer;
-    DOM.timerResetBtn.onclick = resetTimer;
+            // Title with double-click inline editing
+            const titleSpan = document.createElement('span');
+            titleSpan.className = 'task-title';
+            titleSpan.textContent = task.title;
+            titleSpan.title = 'Double click to inline edit title';
+            titleSpan.addEventListener('dblclick', () => {
+                this.startInlineEdit(titleSpan, task);
+            });
+            main.appendChild(titleSpan);
 
-    DOM.focusPills.forEach(pill => {
-        pill.onclick = () => {
-            DOM.focusPills.forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            const mins = Number(pill.dataset.mins);
-            State.pomodoro.duration = mins * 60;
-            resetTimer();
-            sound.playPop();
-        };
-    });
+            // Meta tags (Priority, Category, Due Date, Subtasks)
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'task-meta-tags';
 
-    DOM.ambientChips.forEach(chip => {
-        chip.onclick = () => {
-            DOM.ambientChips.forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            sound.startAmbient(chip.dataset.sound);
-        };
-    });
+            // Priority badge
+            const prioPill = document.createElement('span');
+            prioPill.className = `tag-pill tag-prio-${task.priority === 'medium' ? 'med' : task.priority}`;
+            prioPill.textContent = task.priority.toUpperCase();
+            metaDiv.appendChild(prioPill);
 
-    if (DOM.ambientVolSlider) {
-        DOM.ambientVolSlider.oninput = (e) => {
-            const val = Number(e.target.value);
-            sound.setAmbientVolume(val / 100);
-            if (DOM.ambientVolVal) DOM.ambientVolVal.textContent = `${val}%`;
-            if (DOM.ambientVolIcon) {
-                DOM.ambientVolIcon.textContent = val === 0 ? '🔇' : (val < 50 ? '🔉' : '🔊');
+            // Category badge
+            const catPill = document.createElement('span');
+            catPill.className = 'tag-pill tag-cat';
+            catPill.textContent = task.category;
+            metaDiv.appendChild(catPill);
+
+            // Due Date badge
+            if (task.dueDate) {
+                const duePill = document.createElement('span');
+                const isOverdue = new Date(task.dueDate) < new Date(new Date().toDateString()) && task.status !== 'completed';
+                const isToday = task.dueDate === new Date().toISOString().split('T')[0];
+                duePill.className = `tag-pill tag-due ${isOverdue ? 'overdue' : (isToday ? 'today' : '')}`;
+                duePill.textContent = `📅 ${task.dueDate}${isOverdue ? ' (Overdue)' : ''}`;
+                metaDiv.appendChild(duePill);
             }
-        };
-    }
 
-    /* ==========================================================================
-       21. SLIDE-OVER INSPECTOR DRAWER
-       ========================================================================== */
-    function openInspector(taskId) {
-        const task = State.tasks.find(t => t.id === taskId);
-        if (!task) return;
+            // Subtask count badge
+            if (task.subtasks && task.subtasks.length > 0) {
+                const doneSt = task.subtasks.filter(st => st.completed).length;
+                const subPill = document.createElement('span');
+                subPill.className = 'tag-pill tag-sub';
+                subPill.textContent = `☑ ${doneSt}/${task.subtasks.length}`;
+                metaDiv.appendChild(subPill);
+            }
 
-        DOM.drawerTaskId.value = task.id;
-        DOM.drawerTaskTitle.value = task.text;
-        DOM.drawerTaskStatus.value = task.status || (task.completed ? 'completed' : 'todo');
-        DOM.drawerTaskPrio.value = task.priority || 'medium';
-        DOM.drawerTaskCat.value = task.category || '👤 Personal';
-        DOM.drawerTaskDue.value = task.dueDate || '';
-        DOM.drawerTaskNotes.value = task.notes || '';
+            main.appendChild(metaDiv);
 
-        if (task.starred) DOM.drawerStarBtn.classList.add('starred');
-        else DOM.drawerStarBtn.classList.remove('starred');
+            // Actions Area
+            const actions = document.createElement('div');
+            actions.className = 'task-actions';
 
-        renderDrawerSubtasks(task);
-        DOM.drawerBackdrop.classList.remove('hidden');
-        sound.playPop();
-    }
+            // Star Button
+            const starBtn = document.createElement('button');
+            starBtn.className = `action-icon-btn ${task.starred ? 'starred' : ''}`;
+            starBtn.innerHTML = task.starred ? '⭐' : '☆';
+            starBtn.title = task.starred ? 'Unpin' : 'Star / Pin to top';
+            starBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.state.updateTask(task.id, { starred: !task.starred });
+                this.sound.playPop();
+                this.renderTasks();
+            });
 
-    function renderDrawerSubtasks(task) {
-        DOM.drawerSubtasksList.innerHTML = '';
-        const subtasks = task.subtasks || [];
-        const done = subtasks.filter(s => s.completed).length;
-        DOM.drawerSubtasksCount.textContent = `${done}/${subtasks.length}`;
+            // Focus Sprint Button
+            const focusBtn = document.createElement('button');
+            focusBtn.className = 'action-icon-btn';
+            focusBtn.innerHTML = '⏱️';
+            focusBtn.title = 'Set as focus target';
+            focusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.timer.setTarget(task);
+                if (this.elTimerTarget) {
+                    this.elTimerTarget.textContent = `Focusing on: "${task.title}"`;
+                }
+                const focusCard = document.querySelector('.focus-card');
+                if (focusCard) {
+                    focusCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                this.sound.playPop();
+                this.showToast(`Focus target set: "${task.title}"`);
+            });
 
-        subtasks.forEach((st, idx) => {
-            const li = document.createElement('li');
-            li.className = `drawer-st-item ${st.completed ? 'checked' : ''}`;
-            li.innerHTML = `
-                <input type="checkbox" class="st-box" ${st.completed ? 'checked' : ''}>
-                <span>${escapeHtml(st.text)}</span>
-                <button type="button" class="st-del" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">&times;</button>
-            `;
+            // Edit / Details Button
+            const editBtn = document.createElement('button');
+            editBtn.className = 'action-icon-btn';
+            editBtn.innerHTML = '✏️';
+            editBtn.title = 'View / Edit details';
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.openDrawer(task);
+            });
 
-            li.querySelector('.st-box').onchange = (e) => {
-                st.completed = e.target.checked;
-                saveStorage();
-                renderDrawerSubtasks(task);
-                renderAll();
+            // Delete Button
+            const delBtn = document.createElement('button');
+            delBtn.className = 'action-icon-btn';
+            delBtn.innerHTML = '🗑️';
+            delBtn.title = 'Delete task';
+            delBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.deleteTaskWithUndo(task.id);
+            });
+
+            actions.appendChild(starBtn);
+            actions.appendChild(focusBtn);
+            actions.appendChild(editBtn);
+            actions.appendChild(delBtn);
+
+            li.appendChild(check);
+            li.appendChild(main);
+            li.appendChild(actions);
+
+            return li;
+        }
+
+        /* ----------------------------------------------------------------------
+           INLINE TITLE EDITING
+           ---------------------------------------------------------------------- */
+        startInlineEdit(titleSpan, task) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'inline-edit-box';
+            input.value = task.title;
+
+            const finishEdit = () => {
+                const val = input.value.trim();
+                if (val && val !== task.title) {
+                    this.state.updateTask(task.id, { title: val });
+                    this.sound.playPop();
+                    this.showToast('Task title updated');
+                }
+                this.renderTasks();
             };
 
-            li.querySelector('.st-del').onclick = () => {
-                task.subtasks.splice(idx, 1);
-                saveStorage();
-                renderDrawerSubtasks(task);
-                renderAll();
-            };
+            input.addEventListener('blur', finishEdit);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    finishEdit();
+                } else if (e.key === 'Escape') {
+                    this.renderTasks();
+                }
+            });
 
-            DOM.drawerSubtasksList.appendChild(li);
-        });
-    }
+            titleSpan.replaceWith(input);
+            input.focus();
+            input.select();
+        }
 
-    DOM.drawerAddSubtaskBtn.onclick = () => {
-        const text = DOM.drawerNewSubtask.value.trim();
-        if (!text) return;
-        const taskId = Number(DOM.drawerTaskId.value);
-        const task = State.tasks.find(t => t.id === taskId);
-        if (task) {
+        /* ----------------------------------------------------------------------
+           KANBAN VIEW RENDERING
+           ---------------------------------------------------------------------- */
+        renderKanbanView(tasks) {
+            if (!this.elKbDropTodo || !this.elKbDropInprog || !this.elKbDropDone) return;
+
+            this.elKbDropTodo.innerHTML = '';
+            this.elKbDropInprog.innerHTML = '';
+            this.elKbDropDone.innerHTML = '';
+
+            const todoTasks = tasks.filter(t => t.status === 'todo');
+            const inprogTasks = tasks.filter(t => t.status === 'inprogress');
+            const doneTasks = tasks.filter(t => t.status === 'completed');
+
+            if (this.elKbCntTodo) this.elKbCntTodo.textContent = todoTasks.length;
+            if (this.elKbCntInprog) this.elKbCntInprog.textContent = inprogTasks.length;
+            if (this.elKbCntDone) this.elKbCntDone.textContent = doneTasks.length;
+
+            todoTasks.forEach(t => this.elKbDropTodo.appendChild(this.createKanbanCard(t)));
+            inprogTasks.forEach(t => this.elKbDropInprog.appendChild(this.createKanbanCard(t)));
+            doneTasks.forEach(t => this.elKbDropDone.appendChild(this.createKanbanCard(t)));
+        }
+
+        createKanbanCard(task) {
+            const card = document.createElement('div');
+            card.className = 'kb-card';
+            card.setAttribute('data-prio', task.priority);
+            card.draggable = true;
+            card.dataset.id = task.id;
+
+            // Card Title
+            const title = document.createElement('div');
+            title.className = 'kb-card-title';
+            title.textContent = task.title;
+
+            // Card Meta
+            const meta = document.createElement('div');
+            meta.className = 'kb-card-meta';
+
+            const catSpan = document.createElement('span');
+            catSpan.textContent = task.category;
+
+            const prioSpan = document.createElement('span');
+            prioSpan.textContent = (task.starred ? '⭐ ' : '') + task.priority.toUpperCase();
+
+            meta.appendChild(catSpan);
+            meta.appendChild(prioSpan);
+
+            card.appendChild(title);
+            card.appendChild(meta);
+
+            // Drag Events
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', task.id);
+                card.style.opacity = '0.4';
+                this.sound.playPop();
+            });
+
+            card.addEventListener('dragend', () => {
+                card.style.opacity = '1';
+            });
+
+            // Click to open details in drawer
+            card.addEventListener('click', () => {
+                this.openDrawer(task);
+            });
+
+            return card;
+        }
+
+        setupKanbanDragAndDrop() {
+            const dropzones = [this.elKbDropTodo, this.elKbDropInprog, this.elKbDropDone];
+
+            dropzones.forEach(zone => {
+                if (!zone) return;
+
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const taskId = e.dataTransfer.getData('text/plain');
+                    const newStatus = zone.dataset.status;
+
+                    if (taskId && newStatus) {
+                        this.state.updateTask(taskId, { status: newStatus });
+                        this.sound.playSwoosh();
+                        this.renderAll();
+                        this.showToast(`Card moved to ${newStatus.toUpperCase()}`);
+                    }
+                });
+            });
+        }
+
+        /* ----------------------------------------------------------------------
+           ACTIVE FILTERS RESET BANNER
+           ---------------------------------------------------------------------- */
+        checkActiveFilters() {
+            if (!this.elFiltersBanner) return;
+
+            const isFiltered = (
+                this.state.searchQuery !== '' ||
+                this.state.filterStatus !== 'all' ||
+                this.state.filterCategory !== 'all' ||
+                this.state.filterPriority !== 'all'
+            );
+
+            this.elFiltersBanner.classList.toggle('hidden', !isFiltered);
+        }
+
+        resetAllFilters() {
+            this.state.searchQuery = '';
+            this.state.filterStatus = 'all';
+            this.state.filterCategory = 'all';
+            this.state.filterPriority = 'all';
+            this.state.sortOrder = 'newest';
+
+            if (this.elSearchInput) this.elSearchInput.value = '';
+            if (this.elSearchClearBtn) this.elSearchClearBtn.classList.add('hidden');
+            if (this.elFilterCategory) this.elFilterCategory.value = 'all';
+            if (this.elFilterPriority) this.elFilterPriority.value = 'all';
+            if (this.elSortOrder) this.elSortOrder.value = 'newest';
+
+            this.elTabBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === 'all');
+            });
+
+            this.sound.playPop();
+            this.renderTasks();
+            this.checkActiveFilters();
+            this.showToast('All filters reset');
+        }
+
+        /* ----------------------------------------------------------------------
+           TASK INSPECTOR / DRAWER
+           ---------------------------------------------------------------------- */
+        openDrawer(task) {
+            if (!this.elTaskDrawer || !this.elDrawerBackdrop) return;
+
+            this.currentDrawerTaskId = task.id;
+            this.elDrawerTaskId.value = task.id;
+            this.elDrawerTitle.value = task.title;
+            this.elDrawerStatus.value = task.status;
+            this.elDrawerPrio.value = task.priority;
+            this.elDrawerCat.value = task.category;
+            this.elDrawerDue.value = task.dueDate || '';
+            this.elDrawerNotes.value = task.notes || '';
+
+            if (this.elDrawerStarBtn) {
+                this.elDrawerStarBtn.classList.toggle('active', !!task.starred);
+            }
+
+            this.renderDrawerSubtasks(task);
+
+            this.elDrawerBackdrop.classList.remove('hidden');
+            this.sound.playPop();
+        }
+
+        closeDrawer() {
+            if (!this.elDrawerBackdrop) return;
+            this.elDrawerBackdrop.classList.add('hidden');
+        }
+
+        renderDrawerSubtasks(task) {
+            if (!this.elDrawerSubtasksList || !this.elDrawerChecklistCnt) return;
+            this.elDrawerSubtasksList.innerHTML = '';
+
+            const subtasks = task.subtasks || [];
+            const done = subtasks.filter(s => s.completed).length;
+            this.elDrawerChecklistCnt.textContent = `${done}/${subtasks.length}`;
+
+            subtasks.forEach((st, idx) => {
+                const li = document.createElement('li');
+                li.className = `cl-item ${st.completed ? 'checked' : ''}`;
+
+                const chk = document.createElement('input');
+                chk.type = 'checkbox';
+                chk.checked = !!st.completed;
+                chk.addEventListener('change', () => {
+                    st.completed = chk.checked;
+                    this.state.save();
+                    this.renderDrawerSubtasks(task);
+                    this.renderTasks();
+                    this.sound.playPop();
+                });
+
+                const txt = document.createElement('span');
+                txt.textContent = st.text;
+
+                const del = document.createElement('span');
+                del.className = 'cl-del';
+                del.innerHTML = '&times;';
+                del.title = 'Delete subtask';
+                del.addEventListener('click', () => {
+                    subtasks.splice(idx, 1);
+                    this.state.save();
+                    this.renderDrawerSubtasks(task);
+                    this.renderTasks();
+                });
+
+                li.appendChild(chk);
+                li.appendChild(txt);
+                li.appendChild(del);
+                this.elDrawerSubtasksList.appendChild(li);
+            });
+        }
+
+        addDrawerSubtask() {
+            if (!this.elDrawerNewSubtask) return;
+            const text = this.elDrawerNewSubtask.value.trim();
+            if (!text) return;
+
+            const id = this.elDrawerTaskId.value;
+            const task = this.state.tasks.find(t => t.id === id);
+            if (!task) return;
+
             if (!task.subtasks) task.subtasks = [];
-            task.subtasks.push({ id: Date.now(), text, completed: false });
-            DOM.drawerNewSubtask.value = '';
-            renderDrawerSubtasks(task);
-            saveStorage();
-            renderAll();
-        }
-    };
+            task.subtasks.push({ text, completed: false });
+            this.state.save();
 
-    DOM.drawerStarBtn.onclick = () => {
-        const taskId = Number(DOM.drawerTaskId.value);
-        toggleStar(taskId);
-        const task = State.tasks.find(t => t.id === taskId);
-        if (task && task.starred) DOM.drawerStarBtn.classList.add('starred');
-        else DOM.drawerStarBtn.classList.remove('starred');
-    };
-
-    DOM.drawerSaveBtn.onclick = () => {
-        const taskId = Number(DOM.drawerTaskId.value);
-        const task = State.tasks.find(t => t.id === taskId);
-        if (!task) return;
-
-        task.text = DOM.drawerTaskTitle.value.trim() || task.text;
-        task.status = DOM.drawerTaskStatus.value;
-        task.completed = (task.status === 'completed');
-        if (task.completed && !task.completedAt) task.completedAt = Date.now();
-        task.priority = DOM.drawerTaskPrio.value;
-        task.category = DOM.drawerTaskCat.value;
-        task.dueDate = DOM.drawerTaskDue.value;
-        task.notes = DOM.drawerTaskNotes.value.trim();
-
-        saveStorage();
-        renderAll();
-        updateCoachAdvice();
-        DOM.drawerBackdrop.classList.add('hidden');
-        toast.show({ message: 'Task updated!', icon: '✅' });
-        sound.playPop();
-    };
-
-    DOM.drawerDeleteBtn.onclick = () => {
-        const taskId = Number(DOM.drawerTaskId.value);
-        deleteTask(taskId);
-    };
-
-    DOM.drawerCloseBtn.onclick = () => DOM.drawerBackdrop.classList.add('hidden');
-    DOM.drawerBackdrop.onclick = (e) => {
-        if (e.target === DOM.drawerBackdrop) DOM.drawerBackdrop.classList.add('hidden');
-    };
-
-    /* ==========================================================================
-       22. STAGED AI SUBTASKS & QUICK DATE CHIPS
-       ========================================================================== */
-    function renderStagedShelf() {
-        DOM.shelfItems.innerHTML = '';
-        if (State.stagedSubtasks.length === 0) {
-            DOM.subtasksShelf.classList.add('hidden');
-            return;
+            this.elDrawerNewSubtask.value = '';
+            this.renderDrawerSubtasks(task);
+            this.renderTasks();
+            this.sound.playPop();
         }
 
-        DOM.subtasksShelf.classList.remove('hidden');
-        State.stagedSubtasks.forEach((st, idx) => {
-            const chip = document.createElement('div');
-            chip.className = 'shelf-item-chip';
-            chip.innerHTML = `
-                <span>${idx + 1}. ${escapeHtml(st)}</span>
-                <button type="button">&times;</button>
-            `;
-            chip.querySelector('button').onclick = () => {
-                State.stagedSubtasks.splice(idx, 1);
-                renderStagedShelf();
-            };
-            DOM.shelfItems.appendChild(chip);
-        });
-    }
+        saveDrawerTask() {
+            const id = this.elDrawerTaskId.value;
+            const task = this.state.tasks.find(t => t.id === id);
+            if (!task) return;
 
-    DOM.aiBreakdownBtn.onclick = () => {
-        const title = DOM.taskInput.value.trim();
-        if (!title) {
-            toast.show({ message: 'Type a task title first so AI can break it down!', icon: '💡' });
-            return;
-        }
-        sound.playPop();
-        State.stagedSubtasks = generateAiSubtasks(title);
-        renderStagedShelf();
-        toast.show({ message: `Generated ${State.stagedSubtasks.length} actionable subtasks!`, icon: '✨' });
-    };
-
-    DOM.clearShelfBtn.onclick = () => {
-        State.stagedSubtasks = [];
-        renderStagedShelf();
-    };
-
-    // Quick Date Chips
-    document.querySelectorAll('.date-chip').forEach(chip => {
-        chip.onclick = () => {
-            const days = Number(chip.dataset.days);
-            const d = new Date();
-            d.setDate(d.getDate() + days);
-            DOM.dueDateInput.value = d.toISOString().split('T')[0];
-            sound.playPop();
-        };
-    });
-
-    // Voice Dictation
-    DOM.voiceBtn.onclick = () => {
-        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!Speech) {
-            toast.show({ message: 'Speech recognition not supported in this browser.', icon: '⚠️' });
-            return;
-        }
-        const rec = new Speech();
-        rec.lang = 'en-US';
-        rec.start();
-        DOM.voicePulse.classList.remove('hidden');
-        toast.show({ message: 'Listening... Speak your task!', icon: '🎙️' });
-
-        rec.onresult = (e) => {
-            const transcript = e.results[0][0].transcript;
-            if (transcript) {
-                DOM.taskInput.value = transcript;
-                DOM.taskInput.focus();
-                sound.playPop();
-                toast.show({ message: `Captured: "${transcript}"`, icon: '🎤' });
+            const newTitle = this.elDrawerTitle.value.trim();
+            if (!newTitle) {
+                this.showToast('Task title cannot be empty');
+                return;
             }
-        };
 
-        rec.onend = () => {
-            DOM.voicePulse.classList.add('hidden');
-        };
-    };
+            this.state.updateTask(id, {
+                title: newTitle,
+                status: this.elDrawerStatus.value,
+                priority: this.elDrawerPrio.value,
+                category: this.elDrawerCat.value,
+                dueDate: this.elDrawerDue.value,
+                notes: this.elDrawerNotes.value.trim()
+            });
 
-    /* ==========================================================================
-       23. THEME & AUDIO SWITCHER
-       ========================================================================== */
-    function updateThemeActiveUI(themeName) {
-        DOM.themeOptions.forEach(opt => {
-            opt.classList.toggle('active', opt.dataset.theme === themeName);
-        });
-    }
-
-    function applyTheme(themeName) {
-        document.documentElement.setAttribute('data-theme', themeName);
-        localStorage.setItem('tf_hyper_theme', themeName);
-        updateThemeActiveUI(themeName);
-        sound.playPop();
-        toast.show({ message: `Theme: ${themeName}`, icon: '🎨' });
-    }
-
-    DOM.themeBtn.onclick = (e) => {
-        e.stopPropagation();
-        DOM.themeMenu.classList.toggle('hidden');
-        sound.playPop();
-    };
-
-    DOM.themeOptions.forEach(opt => {
-        opt.onclick = () => {
-            applyTheme(opt.dataset.theme);
-            DOM.themeMenu.classList.add('hidden');
-        };
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!DOM.themeBtn.contains(e.target) && !DOM.themeMenu.contains(e.target)) {
-            DOM.themeMenu.classList.add('hidden');
-        }
-    });
-
-    DOM.soundBtn.onclick = () => {
-        const unmuted = sound.toggleMute();
-        DOM.soundBtn.querySelector('.btn-icon').textContent = unmuted ? '🔊' : '🔇';
-        toast.show({ message: unmuted ? 'Sound FX Enabled' : 'Audio Muted', icon: unmuted ? '🔊' : '🔇' });
-    };
-
-    /* ==========================================================================
-       24. TOOLBAR, SEARCH & FILTER EVENTS
-       ========================================================================== */
-    DOM.prioChips.forEach(chip => {
-        chip.onclick = () => {
-            DOM.prioChips.forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            State.activeComposerPriority = chip.dataset.prio;
-            sound.playPop();
-        };
-    });
-
-    DOM.addTaskBtn.onclick = addTask;
-    DOM.taskInput.onkeydown = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addTask();
-        }
-    };
-
-    DOM.filterTabs.forEach(tab => {
-        tab.onclick = () => {
-            DOM.filterTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            State.currentFilter = tab.dataset.filter;
-            sound.playPop();
-            renderAll();
-        };
-    });
-
-    DOM.searchInput.oninput = (e) => {
-        State.searchTerm = e.target.value.trim();
-        DOM.searchClearBtn.classList.toggle('hidden', !State.searchTerm);
-        renderAll();
-    };
-
-    DOM.searchClearBtn.onclick = () => {
-        DOM.searchInput.value = '';
-        State.searchTerm = '';
-        DOM.searchClearBtn.classList.add('hidden');
-        renderAll();
-    };
-
-    DOM.filterCategory.onchange = (e) => {
-        State.filterCategory = e.target.value;
-        renderAll();
-    };
-
-    DOM.filterPriority.onchange = (e) => {
-        State.filterPriority = e.target.value;
-        renderAll();
-    };
-
-    DOM.sortOrder.onchange = (e) => {
-        State.sortOrder = e.target.value;
-        renderAll();
-    };
-
-    if (DOM.btnResetFilters) {
-        DOM.btnResetFilters.onclick = () => {
-            State.currentFilter = 'all';
-            State.filterCategory = 'all';
-            State.filterPriority = 'all';
-            State.searchTerm = '';
-            DOM.searchInput.value = '';
-            DOM.filterCategory.value = 'all';
-            DOM.filterPriority.value = 'all';
-            DOM.filterTabs.forEach(t => t.classList.toggle('active', t.dataset.filter === 'all'));
-            DOM.searchClearBtn.classList.add('hidden');
-            sound.playPop();
-            renderAll();
-            toast.show({ message: 'All filters reset', icon: '↺' });
-        };
-    }
-
-    DOM.btnViewList.onclick = () => {
-        State.viewMode = 'list';
-        DOM.btnViewList.classList.add('active');
-        DOM.btnViewKanban.classList.remove('active');
-        sound.playPop();
-        renderAll();
-    };
-
-    DOM.btnViewKanban.onclick = () => {
-        State.viewMode = 'kanban';
-        DOM.btnViewKanban.classList.add('active');
-        DOM.btnViewList.classList.remove('active');
-        sound.playPop();
-        renderAll();
-    };
-
-    DOM.clearDoneBtn.onclick = clearDone;
-
-    // Backup & Shortcuts Modal Handlers
-    DOM.shortcutsBtn.onclick = () => {
-        DOM.shortcutsModal.classList.remove('hidden');
-        sound.playPop();
-    };
-    DOM.shortcutsClose.onclick = () => DOM.shortcutsModal.classList.add('hidden');
-
-    DOM.dataBackupBtn.onclick = () => {
-        DOM.backupModal.classList.remove('hidden');
-        sound.playPop();
-    };
-    DOM.backupClose.onclick = () => DOM.backupModal.classList.add('hidden');
-
-    DOM.btnExportJson.onclick = () => {
-        const blob = new Blob([JSON.stringify(State.tasks, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `taskflow-backup-${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        toast.show({ message: 'JSON backup downloaded!', icon: '📥' });
-        sound.playPop();
-    };
-
-    DOM.btnExportCsv.onclick = () => {
-        let csv = 'ID,Task,Completed,Priority,Category,DueDate,CreatedAt\n';
-        State.tasks.forEach(t => {
-            csv += `${t.id},"${(t.text || '').replace(/"/g, '""')}",${t.completed},${t.priority},"${t.category}",${t.dueDate || ''},${new Date(t.createdAt).toISOString()}\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `taskflow-tasks-${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        toast.show({ message: 'CSV downloaded!', icon: '📊' });
-        sound.playPop();
-    };
-
-    DOM.btnLoadDemo.onclick = () => {
-        State.tasks = JSON.parse(JSON.stringify(DEMO_TASKS));
-        saveStorage();
-        renderAll();
-        updateCoachAdvice();
-        DOM.backupModal.classList.add('hidden');
-        confetti.burst();
-        sound.playChime();
-        toast.show({ message: 'Showcase tasks loaded!', icon: '✨' });
-    };
-
-    /* ==========================================================================
-       25. KEYBOARD SHORTCUTS
-       ========================================================================== */
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.add('hidden'));
-            if (DOM.drawerBackdrop) DOM.drawerBackdrop.classList.add('hidden');
-            if (DOM.themeMenu) DOM.themeMenu.classList.add('hidden');
-            if (DOM.zenOverlay) DOM.zenOverlay.classList.add('hidden');
-            return;
+            this.sound.playChime();
+            this.closeDrawer();
+            this.renderAll();
+            this.showToast('Task saved successfully');
         }
 
-        const isTyping = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-            e.preventDefault();
-            DOM.searchInput.focus();
-            DOM.searchInput.select();
-            return;
+        /* ----------------------------------------------------------------------
+           DELETE WITH 1-CLICK UNDO
+           ---------------------------------------------------------------------- */
+        deleteTaskWithUndo(id) {
+            const removed = this.state.deleteTask(id);
+            if (!removed) return;
+
+            this.sound.playPop();
+            this.renderAll();
+
+            this.showToast(`Deleted "${removed.title}"`, 'Undo', () => {
+                const restored = this.state.restoreLastDeleted();
+                if (restored) {
+                    this.sound.playChime();
+                    this.renderAll();
+                    this.showToast(`Restored "${restored.title}"`);
+                }
+            });
         }
 
-        if (isTyping) return;
-
-        if (e.key.toLowerCase() === 'n') {
-            e.preventDefault();
-            DOM.taskInput.focus();
-        } else if (e.key.toLowerCase() === 'z') {
-            if (DOM.zenOverlay.classList.contains('hidden')) openZenMode();
-            else closeZenMode();
-        } else if (e.key.toLowerCase() === 'p') {
-            DOM.timerToggleBtn.click();
-        } else if (e.key.toLowerCase() === 'm') {
-            DOM.soundBtn.click();
-        } else if (e.key.toLowerCase() === 't') {
-            DOM.themeBtn.click();
-        } else if (e.key.toLowerCase() === 'v') {
-            if (State.viewMode === 'list') DOM.btnViewKanban.click();
-            else DOM.btnViewList.click();
-        } else if (e.key === '?') {
-            DOM.shortcutsModal.classList.remove('hidden');
+        /* ----------------------------------------------------------------------
+           DATA EXPORT & OPTIONAL SHOWCASE DATA
+           ---------------------------------------------------------------------- */
+        exportJSON() {
+            const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.state.tasks, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute('href', dataStr);
+            downloadAnchor.setAttribute('download', `taskflow_backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            this.sound.playPop();
+            this.showToast('JSON export downloaded');
         }
-    });
 
-    /* ==========================================================================
-       26. UTILITIES & INITIAL BOOTSTRAP
-       ========================================================================== */
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+        exportCSV() {
+            if (this.state.tasks.length === 0) {
+                this.showToast('No tasks available to export');
+                return;
+            }
+
+            const headers = ['ID', 'Title', 'Status', 'Priority', 'Category', 'DueDate', 'Starred', 'CreatedAt'];
+            const rows = this.state.tasks.map(t => [
+                `"${t.id}"`,
+                `"${(t.title || '').replace(/"/g, '""')}"`,
+                `"${t.status}"`,
+                `"${t.priority}"`,
+                `"${t.category}"`,
+                `"${t.dueDate || ''}"`,
+                `"${t.starred ? 'Yes' : 'No'}"`,
+                `"${t.createdAt}"`
+            ]);
+
+            const csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent([headers.join(','), ...rows.map(e => e.join(','))].join('\n'));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute('href', csvContent);
+            downloadAnchor.setAttribute('download', `taskflow_backup_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            this.sound.playPop();
+            this.showToast('CSV export downloaded');
+        }
+
+        loadShowcaseData() {
+            const demoTasks = [
+                {
+                    title: 'Deploy TaskFlow to Production (Vercel)',
+                    priority: 'high',
+                    category: '💻 Development',
+                    dueDate: new Date().toISOString().split('T')[0],
+                    starred: true,
+                    status: 'inprogress',
+                    notes: 'Check responsive layout on iOS Safari and Android Chrome before final verification.',
+                    subtasks: [
+                        { text: 'Verify cross-browser CSS variables', completed: true },
+                        { text: 'Test offline local storage persistence', completed: true },
+                        { text: 'Audit mobile touch target accessibility', completed: false }
+                    ]
+                },
+                {
+                    title: 'Weekly Sprint Planning & Backlog Grooming',
+                    priority: 'high',
+                    category: '💼 Work',
+                    dueDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+                    starred: false,
+                    status: 'todo',
+                    notes: 'Prepare slide deck and review metrics with engineering team.',
+                    subtasks: [
+                        { text: 'Review bug tracker and prioritize high impact fixes', completed: false },
+                        { text: 'Assign milestones to team members', completed: false }
+                    ]
+                },
+                {
+                    title: '45-minute High-Intensity Interval Workout',
+                    priority: 'medium',
+                    category: '💪 Fitness',
+                    dueDate: new Date().toISOString().split('T')[0],
+                    starred: false,
+                    status: 'todo',
+                    notes: 'Warm up thoroughly, hydrate every 15 minutes.',
+                    subtasks: []
+                },
+                {
+                    title: 'Sketch Minimalist UI Component Guidelines',
+                    priority: 'low',
+                    category: '🎨 Creative',
+                    dueDate: '',
+                    starred: false,
+                    status: 'completed',
+                    notes: 'Focus on typography scales, 8px grid alignment, and gentle shadows.',
+                    subtasks: []
+                }
+            ];
+
+            demoTasks.forEach(t => this.state.addTask(t));
+            this.sound.playChime();
+            this.closeModal(this.elBackupModal);
+            this.renderAll();
+            this.showToast('Sample tasks loaded! Ready to explore.');
+        }
     }
 
-    function init() {
-        loadStorage();
-        startLiveClock();
-        setupSpotlight();
-        init3DTiltPhysics();
-        initCoach();
-        updateProfileDisplay();
-        updateTimerDisplay();
-        renderAll();
-
-        console.log('⚡ TaskFlow Hyper Studio initialized successfully.');
-    }
-
+    // Launch App when DOM is ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => new TaskFlowApp());
     } else {
-        init();
+        new TaskFlowApp();
     }
 })();
