@@ -17,6 +17,7 @@ Crafted 100% with pure Vanilla HTML5, CSS3 Custom Properties, and ES6+ JavaScrip
 * Physics-based 3D rotation (`rotateX`, `rotateY`) on mouse move across every studio Bento card.
 * Specular radial glare spotlights that follow the pointer across card surfaces with realistic depth.
 
+<<<<<<< HEAD
 ### 3. 🧘 Distraction-Free Fullscreen Zen Mode Portal
 * Enter Zen Mode with one click or press <kbd>Z</kbd>.
 * Features an animated breathing pulse ring, giant glowing countdown digits, active target task, and randomized mindfulness wisdom quotes.
@@ -96,3 +97,6 @@ Simply open [index.html](file:///c:/Projects/Task%20Manager/index.html) in any m
 Version 1 has been completely removed in favor of this unified, modern studio edition.
 
 Created with pride by **Shivam Chauhan** &bull; 2026.
+=======
+https://taskmanager-shivam.vercel.app
+>>>>>>> e488b4224a61f809fe1a6e823fb8369b4a74b400
