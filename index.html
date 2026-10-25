@@ -1,78 +1,663 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="hyper-prism">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager | Shivam Chauhan</title>
-    <link rel="icon" type="image/png" sizes="" href="favicon.png">
-    <link rel="stylesheet" href="css/style.css">
+    <title>TaskFlow Hyper Studio — Next-Gen Productivity Experience</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Premium Fonts: Space Grotesk, Plus Jakarta Sans, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <main class="container">
+    <!-- Interactive Floating Stardust Canvas -->
+    <canvas id="stardust-canvas"></canvas>
 
-        <h1>Task Manager</h1>
+    <!-- Cursor Spotlight Follower -->
+    <div class="cursor-glow" id="cursor-glow"></div>
 
-        <div class="stats">
+    <!-- Holographic Aurora Mesh Backdrop -->
+    <div class="holo-mesh">
+        <div class="holo-orb orb-alpha"></div>
+        <div class="holo-orb orb-beta"></div>
+        <div class="holo-orb orb-gamma"></div>
+        <div class="cyber-grid-overlay"></div>
+    </div>
 
-            <div class="stat-card">
-                <h3 id="total-tasks">0</h3>
-                <p>Total</p>
+    <!-- Physics Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Fullscreen Zen Mode Portal (Initially Hidden) -->
+    <div class="zen-mode-overlay hidden" id="zen-overlay">
+        <button class="zen-exit-btn" id="zen-exit-btn" title="Exit Zen Mode (Esc)">&times; Exit Zen</button>
+        <div class="zen-content">
+            <div class="zen-breathing-ring"></div>
+            <div class="zen-timer-digits" id="zen-timer-digits">25:00</div>
+            <div class="zen-task-title" id="zen-task-title">General Deep Focus</div>
+            <div class="zen-controls">
+                <button class="zen-btn" id="zen-toggle-btn">Start Focus</button>
+                <button class="zen-btn secondary" id="zen-reset-btn">Reset</button>
+            </div>
+            <div class="zen-quote" id="zen-quote">"Focus is a muscle. Train it in silence."</div>
+        </div>
+    </div>
+
+    <!-- Main Studio Application Shell -->
+    <div class="hyper-app">
+
+        <!-- =================================================================
+             TOP NAVIGATION BAR
+             ================================================================= -->
+        <header class="hyper-navbar">
+            <div class="nav-left">
+                <div class="brand-badge">
+                    <div class="brand-logo-icon">
+                        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="brand-name-group">
+                        <span class="brand-title">TaskFlow <span class="neon-pill">HYPER</span></span>
+                        <span class="brand-tagline">Studio Edition</span>
+                    </div>
+                </div>
+
+                <!-- Live Clock & Date Widget -->
+                <div class="live-clock-card" id="live-clock-card">
+                    <span class="clock-digits" id="live-clock-digits">12:00:00</span>
+                    <span class="clock-date" id="live-clock-date">Sun, Oct 25</span>
+                </div>
             </div>
 
-            <div class="stat-card">
-                <h3 id="active-tasks">0</h3>
-                <p>Active</p>
+            <!-- Gamification XP & Streak Badge (Clickable to open Achievements!) -->
+            <div class="gamify-pod" id="open-achievements-btn" title="Click to view Trophies & Achievements!">
+                <div class="streak-flame-wrapper">
+                    <span class="flame-icon">🔥</span>
+                    <div class="streak-text-wrap">
+                        <span class="streak-number" id="streak-count">0</span>
+                        <span class="streak-sub">Streak</span>
+                    </div>
+                </div>
+                <div class="xp-level-block">
+                    <div class="level-meta-row">
+                        <span class="rank-name" id="level-title">Novice I</span>
+                        <span class="xp-ratio" id="level-xp">0 / 100 XP</span>
+                    </div>
+                    <div class="xp-meter-track">
+                        <div class="xp-meter-bar" id="xp-meter-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <span class="trophy-hint-icon">🏆</span>
             </div>
 
-            <div class="stat-card">
-                <h3 id="completed-tasks">0</h3>
-                <p>Completed</p>
+            <!-- Dynamic Island Focus HUD (Displays when focus timer is active) -->
+            <div class="dynamic-island-hud hidden" id="dynamic-island-hud" title="Click to open Zen Mode">
+                <span class="hud-pulse-dot"></span>
+                <span class="hud-time" id="hud-time">25:00</span>
+                <span class="hud-task-name" id="hud-task-name">General Focus</span>
             </div>
 
+            <!-- Header Quick Actions -->
+            <div class="nav-right">
+                <!-- Zen Mode Trigger -->
+                <button class="hyper-icon-btn glow-btn" id="open-zen-btn" title="Enter Distraction-Free Zen Mode (Z)" aria-label="Zen Mode">
+                    <span class="btn-icon">🧘</span>
+                </button>
+
+                <!-- Sound Effects Toggle -->
+                <button class="hyper-icon-btn" id="sound-btn" title="Toggle Sound FX & Audio (M)" aria-label="Toggle Sound">
+                    <span class="btn-icon" id="sound-btn-icon">🔊</span>
+                </button>
+
+                <!-- Quick Theme Popover Trigger -->
+                <div class="theme-dropdown-container">
+                    <button class="hyper-icon-btn glow-btn" id="theme-btn" title="Switch Theme Palette (T)" aria-label="Themes">
+                        <span class="btn-icon">🎨</span>
+                    </button>
+                    <div class="theme-menu-popover hidden" id="theme-menu">
+                        <div class="theme-option active" data-theme="hyper-prism">
+                            <span class="theme-swatch swatch-prism"></span>
+                            <div class="theme-text"><strong>Hyper Prism</strong><span>Cyber Obsidian & Cyan</span></div>
+                        </div>
+                        <div class="theme-option" data-theme="liquid-pearl">
+                            <span class="theme-swatch swatch-pearl"></span>
+                            <div class="theme-text"><strong>Liquid Pearl</strong><span>Clean Luxury Light</span></div>
+                        </div>
+                        <div class="theme-option" data-theme="cyberpunk-2077">
+                            <span class="theme-swatch swatch-cyber"></span>
+                            <div class="theme-text"><strong>Cyberpunk 2077</strong><span>Neon Yellow & Laser Pink</span></div>
+                        </div>
+                        <div class="theme-option" data-theme="cosmic-nebula">
+                            <span class="theme-swatch swatch-nebula"></span>
+                            <div class="theme-text"><strong>Cosmic Nebula</strong><span>Deep Indigo & Violet</span></div>
+                        </div>
+                        <div class="theme-option" data-theme="emerald-matrix">
+                            <span class="theme-swatch swatch-matrix"></span>
+                            <div class="theme-text"><strong>Emerald Matrix</strong><span>Bio-Green & Gold</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shortcuts Help -->
+                <button class="hyper-icon-btn" id="shortcuts-btn" title="Keyboard Shortcuts (?)" aria-label="Shortcuts">
+                    <kbd>?</kbd>
+                </button>
+
+                <!-- Data Backup / Export -->
+                <button class="hyper-icon-btn" id="data-backup-btn" title="Export / Import Data" aria-label="Backup">
+                    <span class="btn-icon">💾</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- AI Productivity Coach Banner -->
+        <div class="coach-banner-card spotlight-card" id="coach-banner">
+            <div class="coach-icon-bubble">🤖</div>
+            <div class="coach-message-wrap">
+                <span class="coach-tag">HYPER AI COACH</span>
+                <span class="coach-text" id="coach-text">You have 2 high-priority tasks in your pipeline. Ready for a 25-minute deep focus sprint?</span>
+            </div>
+            <div class="coach-action-btns">
+                <button class="coach-action-btn primary" id="coach-sprint-btn">⚡ Start 25m Sprint</button>
+                <button class="coach-action-btn" id="coach-inspire-btn">✨ Next Advice</button>
+            </div>
         </div>
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search tasks...">
+
+        <!-- =================================================================
+             HERO BENTO MATRIX
+             ================================================================= -->
+        <main class="bento-container">
+
+            <!-- BENTO 1: ULTRA-MODERN SMART TASK COMPOSER -->
+            <section class="bento-card bento-composer spotlight-card tilt-card">
+                <div class="specular-glare"></div>
+                <div class="composer-inner">
+                    <div class="composer-header">
+                        <div class="badge-title">
+                            <span class="sparkle-anim">✨</span> 
+                            <span>AI-Powered Quick Composer</span>
+                        </div>
+                        <div class="composer-shortcuts-hint">
+                            <span>Press</span> <kbd>Enter</kbd> <span>to add</span>
+                        </div>
+                    </div>
+
+                    <div class="composer-main-field">
+                        <div class="input-glow-wrapper">
+                            <input 
+                                type="text" 
+                                id="task-input" 
+                                placeholder="What needs conquering? (e.g. Deploy next-gen app !high #dev @tomorrow)"
+                                autocomplete="off"
+                            >
+                            <button type="button" class="mic-wave-btn" id="voice-btn" title="Voice Dictation (Speak)">
+                                <span class="mic-icon">🎙️</span>
+                                <span class="mic-pulse hidden" id="voice-pulse"></span>
+                            </button>
+                        </div>
+                        <button type="button" class="btn-super-add" id="add-task-btn">
+                            <span class="plus-icon">+</span>
+                            <span>Add Task</span>
+                        </button>
+                    </div>
+
+                    <!-- Composer Meta Controls Bar -->
+                    <div class="composer-controls-row">
+                        <!-- Priority Picker -->
+                        <div class="control-unit">
+                            <span class="control-label">Priority</span>
+                            <div class="priority-segmented">
+                                <button type="button" class="prio-chip" data-prio="low">🟢 Low</button>
+                                <button type="button" class="prio-chip active" data-prio="medium">⚡ Med</button>
+                                <button type="button" class="prio-chip" data-prio="high">🔥 High</button>
+                            </div>
+                        </div>
+
+                        <!-- Project Category Selector -->
+                        <div class="control-unit">
+                            <span class="control-label">Category</span>
+                            <select id="project-select" class="hyper-select">
+                                <option value="💼 Work">💼 Work</option>
+                                <option value="👤 Personal" selected>👤 Personal</option>
+                                <option value="💻 Development">💻 Development</option>
+                                <option value="💪 Fitness">💪 Fitness</option>
+                                <option value="🎨 Creative">🎨 Creative</option>
+                            </select>
+                        </div>
+
+                        <!-- Due Date -->
+                        <div class="control-unit">
+                            <span class="control-label">Due Date</span>
+                            <div class="date-picker-wrap">
+                                <input type="date" id="due-date-input" class="hyper-date-input">
+                                <div class="date-quick-chips">
+                                    <button type="button" class="date-chip" data-days="0" title="Set due today">Today</button>
+                                    <button type="button" class="date-chip" data-days="1" title="Set due tomorrow">Tmrw</button>
+                                    <button type="button" class="date-chip" data-days="7" title="Set due in 7 days">+7d</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Auto-Subtasks Button -->
+                        <button type="button" class="btn-ai-sparkle" id="ai-breakdown-btn" title="Auto-breakdown task using smart heuristics">
+                            <span class="ai-stars">✨</span>
+                            <span>Auto Subtasks</span>
+                        </button>
+                    </div>
+
+                    <!-- Auto-Generated Subtasks Staging Shelf -->
+                    <div class="subtasks-shelf hidden" id="subtasks-shelf">
+                        <div class="shelf-header">
+                            <span>✨ Staged Subtasks to Attach:</span>
+                            <button type="button" class="shelf-clear-btn" id="clear-shelf-btn">&times; Clear</button>
+                        </div>
+                        <div class="shelf-items" id="shelf-items"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BENTO 2: HOLOGRAPHIC FOCUS STUDIO WITH SOUND EQUALIZER -->
+            <section class="bento-card bento-focus spotlight-card tilt-card">
+                <div class="specular-glare"></div>
+                <div class="focus-inner">
+                    <div class="focus-header-row">
+                        <div class="badge-title">
+                            <span class="live-dot-pulse"></span>
+                            <span>Cyber Focus Studio</span>
+                        </div>
+                        <div class="focus-mode-pills">
+                            <button class="f-pill active" data-mins="25" data-mode="work">25m Work</button>
+                            <button class="f-pill" data-mins="5" data-mode="short">5m Break</button>
+                            <button class="f-pill" data-mins="15" data-mode="long">15m Break</button>
+                            <button class="f-pill" data-mins="50" data-mode="flow">50m Flow</button>
+                        </div>
+                    </div>
+
+                    <!-- Glowing Focus Timer with Animated Progress Ring -->
+                    <div class="timer-centerpiece">
+                        <svg class="ring-svg" width="180" height="180">
+                            <circle class="ring-track" cx="90" cy="90" r="76"></circle>
+                            <circle class="ring-fill" id="timer-progress-ring" cx="90" cy="90" r="76"></circle>
+                        </svg>
+                        <div class="timer-text-content">
+                            <div class="timer-digits" id="timer-digits">25:00</div>
+                            <div class="timer-target-tag" id="timer-target-tag">Target: General Focus</div>
+                        </div>
+                    </div>
+
+                    <!-- Timer Controls -->
+                    <div class="timer-actions-row">
+                        <button class="btn-timer-primary" id="timer-toggle-btn">Start Focus</button>
+                        <button class="btn-timer-secondary" id="timer-reset-btn">Reset</button>
+                    </div>
+
+                    <!-- Ambient Sound Machine with Live Audio Equalizer -->
+                    <div class="ambient-sound-dock">
+                        <div class="dock-header">
+                            <span class="dock-title">🎧 Ambient Soundscapes</span>
+                            <div class="ambient-vol-wrap" title="Ambient Sound Volume">
+                                <span class="vol-icon" id="ambient-vol-icon">🔉</span>
+                                <input type="range" id="ambient-vol-slider" min="0" max="100" value="70" class="vol-range-slider" aria-label="Ambient Volume">
+                                <span class="vol-val" id="ambient-vol-val">70%</span>
+                            </div>
+                            <canvas class="sound-equalizer-canvas" id="equalizer-canvas" width="60" height="16"></canvas>
+                        </div>
+                        <div class="ambient-chips-grid">
+                            <button class="amb-chip active" data-sound="none">Off</button>
+                            <button class="amb-chip" data-sound="rain">🌧️ Rain</button>
+                            <button class="amb-chip" data-sound="whitenoise">📻 Flow</button>
+                            <button class="amb-chip" data-sound="ocean">🌊 Ocean</button>
+                            <button class="amb-chip" data-sound="binaural">🧘 Zen</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BENTO 3: PRODUCTIVITY SCORE & 30-DAY HABIT HEATMAP -->
+            <section class="bento-card bento-stats spotlight-card tilt-card">
+                <div class="specular-glare"></div>
+                <div class="stats-inner">
+                    <div class="badge-title">📊 Productivity Matrix</div>
+                    
+                    <div class="radial-score-row">
+                        <div class="score-circle-wrap">
+                            <svg class="score-svg" width="90" height="90">
+                                <circle class="score-track" cx="45" cy="45" r="38"></circle>
+                                <circle class="score-bar" id="score-ring" cx="45" cy="45" r="38"></circle>
+                            </svg>
+                            <span class="score-percent" id="score-percent">0%</span>
+                        </div>
+                        <div class="score-meta">
+                            <h3 id="stat-ratio">0 of 0 Completed</h3>
+                            <p id="stat-quote">"Small steps compound into massive results."</p>
+                        </div>
+                    </div>
+
+                    <!-- 30-Day Activity Heatmap Grid -->
+                    <div class="heatmap-section">
+                        <div class="heatmap-header">
+                            <span class="heatmap-title">30-Day Activity Velocity</span>
+                            <span class="heatmap-legend">Less <span class="legend-cell lv0"></span><span class="legend-cell lv1"></span><span class="legend-cell lv2"></span><span class="legend-cell lv3"></span> More</span>
+                        </div>
+                        <div class="heatmap-grid" id="heatmap-grid"></div>
+                    </div>
+
+                    <!-- Mini Stats Grid -->
+                    <div class="stats-mini-grid">
+                        <div class="mini-stat-cell">
+                            <span class="mini-stat-val" id="stat-total">0</span>
+                            <span class="mini-stat-lbl">Total Tasks</span>
+                        </div>
+                        <div class="mini-stat-cell">
+                            <span class="mini-stat-val active-val" id="stat-active">0</span>
+                            <span class="mini-stat-lbl">In Progress</span>
+                        </div>
+                        <div class="mini-stat-cell">
+                            <span class="mini-stat-val done-val" id="stat-done">0</span>
+                            <span class="mini-stat-lbl">Completed</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BENTO 4: TASK COMMAND CENTER (FILTERS, SEARCH, LIST & KANBAN) -->
+            <section class="bento-card bento-tasks spotlight-card">
+                <div class="tasks-inner">
+                    <!-- Control Toolbar -->
+                    <div class="tasks-toolbar">
+                        <!-- Search Box -->
+                        <div class="search-wrap">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="search-input" placeholder="Search tasks, tags, or subtasks... (Ctrl+K)">
+                            <button type="button" class="search-clear-btn hidden" id="search-clear-btn">&times;</button>
+                        </div>
+
+                        <!-- Status Filter Tabs -->
+                        <div class="filter-tabs">
+                            <button class="filter-tab active" data-filter="all">All (<span id="tab-count-all">0</span>)</button>
+                            <button class="filter-tab" data-filter="active">Active (<span id="tab-count-active">0</span>)</button>
+                            <button class="filter-tab" data-filter="completed">Done (<span id="tab-count-completed">0</span>)</button>
+                        </div>
+
+                        <!-- Secondary Filters -->
+                        <div class="dropdown-filters-group">
+                            <select id="filter-category" class="hyper-select">
+                                <option value="all">📁 All Categories</option>
+                                <option value="💼 Work">💼 Work</option>
+                                <option value="👤 Personal">👤 Personal</option>
+                                <option value="💻 Development">💻 Development</option>
+                                <option value="💪 Fitness">💪 Fitness</option>
+                                <option value="🎨 Creative">🎨 Creative</option>
+                            </select>
+
+                            <select id="filter-priority" class="hyper-select">
+                                <option value="all">⚡ All Priorities</option>
+                                <option value="high">🔥 High</option>
+                                <option value="medium">⚡ Medium</option>
+                                <option value="low">🟢 Low</option>
+                            </select>
+
+                            <select id="sort-order" class="hyper-select">
+                                <option value="newest">Newest First</option>
+                                <option value="priority">Priority: High → Low</option>
+                                <option value="due">Due Date: Soonest</option>
+                                <option value="az">A-Z</option>
+                            </select>
+                        </div>
+
+                        <!-- View Switcher (List / Kanban) & Clear Completed -->
+                        <div class="view-switch-btns">
+                            <div class="layout-toggle">
+                                <button class="layout-btn active" id="btn-view-list" title="List View">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                    </svg>
+                                </button>
+                                <button class="layout-btn" id="btn-view-kanban" title="Kanban Board View">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                                        <rect x="3" y="3" width="5" height="18" rx="1"></rect>
+                                        <rect x="10" y="3" width="5" height="12" rx="1"></rect>
+                                        <rect x="17" y="3" width="5" height="15" rx="1"></rect>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <button type="button" class="btn-reset-filters hidden" id="reset-filters-btn" title="Clear all active filters">
+                                <span>↺ Reset Filters</span>
+                            </button>
+
+                            <button class="btn-clear-done" id="clear-done-btn" title="Clear all completed tasks">
+                                <span>🧹 Clear Done</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task List View Container -->
+                    <div class="tasks-scroll-container" id="tasks-list-view">
+                        <ul class="task-stream" id="task-stream"></ul>
+                    </div>
+
+                    <!-- Kanban Board Container (Alternative View) -->
+                    <div class="kanban-board-container hidden" id="kanban-view">
+                        <div class="kanban-grid">
+                            <!-- Col 1: To Do -->
+                            <div class="kb-column" data-col="todo">
+                                <div class="kb-col-header">
+                                    <span class="kb-dot dot-todo"></span>
+                                    <h4>To Do</h4>
+                                    <span class="kb-badge" id="kb-count-todo">0</span>
+                                </div>
+                                <div class="kb-dropzone" id="kb-zone-todo" data-status="todo"></div>
+                                <button type="button" class="kb-quick-add" data-status="todo">+ Add to To Do</button>
+                            </div>
+                            <!-- Col 2: In Progress -->
+                            <div class="kb-column" data-col="inprogress">
+                                <div class="kb-col-header">
+                                    <span class="kb-dot dot-progress"></span>
+                                    <h4>In Progress</h4>
+                                    <span class="kb-badge" id="kb-count-inprogress">0</span>
+                                </div>
+                                <div class="kb-dropzone" id="kb-zone-inprogress" data-status="inprogress"></div>
+                                <button type="button" class="kb-quick-add" data-status="inprogress">+ Add to In Progress</button>
+                            </div>
+                            <!-- Col 3: Completed -->
+                            <div class="kb-column" data-col="completed">
+                                <div class="kb-col-header">
+                                    <span class="kb-dot dot-done"></span>
+                                    <h4>Completed</h4>
+                                    <span class="kb-badge" id="kb-count-completed">0</span>
+                                </div>
+                                <div class="kb-dropzone" id="kb-zone-completed" data-status="completed"></div>
+                                <button type="button" class="kb-quick-add" data-status="completed">+ Add to Completed</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="hyper-footer">
+            <div class="footer-quote" id="footer-quote">
+                ⚡ <em>"The master has failed more times than the beginner has even tried."</em>
+            </div>
+            <div class="footer-brand">
+                <span>TaskFlow Hyper Studio &bull; Crafted by <strong>Shivam Chauhan</strong></span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- =================================================================
+         ACHIEVEMENTS & TROPHIES SHOWCASE MODAL
+         ================================================================= -->
+    <div class="modal-backdrop hidden" id="achievements-modal">
+        <div class="modal-box trophy-modal-box">
+            <div class="modal-box-header">
+                <h3>🏆 Trophy Showcase & Achievements</h3>
+                <button class="modal-close" id="achievements-close">&times;</button>
+            </div>
+            <div class="modal-box-body">
+                <p class="trophy-subtext">Unlock badges by conquering tasks, maintaining daily streaks, and completing deep focus sessions!</p>
+                <div class="trophies-grid" id="trophies-grid"></div>
+            </div>
         </div>
+    </div>
 
-        <div class="filters">
+    <!-- =================================================================
+         SLIDE-OVER TASK INSPECTOR / EDIT DRAWER
+         ================================================================= -->
+    <div class="drawer-backdrop hidden" id="drawer-backdrop">
+        <aside class="inspector-drawer" id="inspector-drawer">
+            <div class="drawer-header">
+                <div class="drawer-badge">Task Details</div>
+                <div class="drawer-actions">
+                    <button class="drawer-icon-btn star-toggle" id="drawer-star-btn" title="Star / Pin">⭐</button>
+                    <button class="drawer-icon-btn" id="drawer-close-btn">&times;</button>
+                </div>
+            </div>
 
-            <button class="filter-btn" data-filter="all">
-                All
-            </button>
+            <div class="drawer-body">
+                <input type="hidden" id="drawer-task-id">
+                
+                <div class="drawer-group">
+                    <label>Task Title</label>
+                    <textarea id="drawer-task-title" class="drawer-textarea" rows="2"></textarea>
+                </div>
 
-            <button class="filter-btn" data-filter="active">
-                Active
-            </button>
+                <div class="drawer-grid-2">
+                    <div class="drawer-group">
+                        <label>Status</label>
+                        <select id="drawer-task-status" class="hyper-select">
+                            <option value="todo">📋 To Do</option>
+                            <option value="inprogress">⏳ In Progress</option>
+                            <option value="completed">✅ Completed</option>
+                        </select>
+                    </div>
 
-            <button class="filter-btn" data-filter="completed">
-                Completed
-            </button>
+                    <div class="drawer-group">
+                        <label>Priority</label>
+                        <select id="drawer-task-prio" class="hyper-select">
+                            <option value="low">🟢 Low</option>
+                            <option value="medium">⚡ Medium</option>
+                            <option value="high">🔥 High</option>
+                        </select>
+                    </div>
+                </div>
 
+                <div class="drawer-grid-2">
+                    <div class="drawer-group">
+                        <label>Category</label>
+                        <select id="drawer-task-cat" class="hyper-select">
+                            <option value="💼 Work">💼 Work</option>
+                            <option value="👤 Personal">👤 Personal</option>
+                            <option value="💻 Development">💻 Development</option>
+                            <option value="💪 Fitness">💪 Fitness</option>
+                            <option value="🎨 Creative">🎨 Creative</option>
+                        </select>
+                    </div>
+
+                    <div class="drawer-group">
+                        <label>Due Date</label>
+                        <input type="date" id="drawer-task-due" class="hyper-date-input">
+                    </div>
+                </div>
+
+                <!-- Subtasks Checklist -->
+                <div class="drawer-group">
+                    <div class="checklist-header">
+                        <label>Checklist Subtasks</label>
+                        <span id="drawer-subtasks-count">0/0</span>
+                    </div>
+                    <div class="add-subtask-row">
+                        <input type="text" id="drawer-new-subtask" placeholder="Add checklist item...">
+                        <button type="button" id="drawer-add-subtask-btn">+ Add</button>
+                    </div>
+                    <ul class="drawer-subtasks-list" id="drawer-subtasks-list"></ul>
+                </div>
+
+                <!-- Notes / Context -->
+                <div class="drawer-group">
+                    <label>Notes & Context</label>
+                    <textarea id="drawer-task-notes" class="drawer-textarea" rows="4" placeholder="Add instructions, links, or context..."></textarea>
+                </div>
+            </div>
+
+            <div class="drawer-footer">
+                <button class="btn-drawer-danger" id="drawer-delete-btn">Delete Task</button>
+                <button class="btn-drawer-save" id="drawer-save-btn">Save Changes</button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- =================================================================
+         SHORTCUTS MODAL
+         ================================================================= -->
+    <div class="modal-backdrop hidden" id="shortcuts-modal">
+        <div class="modal-box">
+            <div class="modal-box-header">
+                <h3>⌨️ Keyboard Shortcuts</h3>
+                <button class="modal-close" id="shortcuts-close">&times;</button>
+            </div>
+            <div class="modal-box-body">
+                <div class="shortcuts-grid">
+                    <div class="sc-item"><kbd>N</kbd> <span>Focus new task input</span></div>
+                    <div class="sc-item"><kbd>Ctrl</kbd> + <kbd>K</kbd> <span>Focus search bar</span></div>
+                    <div class="sc-item"><kbd>Z</kbd> <span>Toggle Fullscreen Zen Focus</span></div>
+                    <div class="sc-item"><kbd>P</kbd> <span>Start / Pause Focus Timer</span></div>
+                    <div class="sc-item"><kbd>M</kbd> <span>Toggle Sound FX & Audio</span></div>
+                    <div class="sc-item"><kbd>T</kbd> <span>Open Theme Selector</span></div>
+                    <div class="sc-item"><kbd>V</kbd> <span>Toggle List / Kanban view</span></div>
+                    <div class="sc-item"><kbd>Esc</kbd> <span>Close drawer, Zen, or modals</span></div>
+                </div>
+            </div>
         </div>
-        <button id="clear-completed">
-            Clear Completed
-        </button>
+    </div>
 
-        <div class="task-input">
-            <input type="text" id="task-input" placeholder="Enter a task...">
-
-            <button id="add-task-btn">
-                Add
-            </button>
+    <!-- =================================================================
+         DATA BACKUP MODAL
+         ================================================================= -->
+    <div class="modal-backdrop hidden" id="backup-modal">
+        <div class="modal-box">
+            <div class="modal-box-header">
+                <h3>💾 Data Backup & Restore</h3>
+                <button class="modal-close" id="backup-close">&times;</button>
+            </div>
+            <div class="modal-box-body">
+                <div class="backup-section">
+                    <h4>Export Data</h4>
+                    <p>Download your complete workspace as a JSON or CSV backup.</p>
+                    <div class="backup-btn-group">
+                        <button class="btn-action" id="btn-export-json">Download JSON</button>
+                        <button class="btn-action" id="btn-export-csv">Download CSV</button>
+                    </div>
+                </div>
+                <hr class="modal-sep">
+                <div class="backup-section">
+                    <h4>Load Showcase Demo Data</h4>
+                    <p>Populate with rich sample tasks, subtasks, and focus targets.</p>
+                    <button class="btn-action" id="btn-load-demo">Load Showcase Tasks</button>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <ul id="task-list"></ul>
+    <!-- Toast Notification Container with Undo -->
+    <div class="toast-container" id="toast-container"></div>
 
-
-
-    </main>
-    <footer>
-        <p>© 2026 Shivam Chauhan. All rights reserved.</p>
-    </footer>
     <script src="js/script.js"></script>
 </body>
 
